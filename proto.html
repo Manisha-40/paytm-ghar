@@ -1,0 +1,1453 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Paytm Ghar · Prototype</title>
+<style>
+:root{--blue:#00baf2;--navy:#002970;--ink:#172b4d;--muted:#6b778c;--line:#e7ebf0;--bg:#f5f7fa;--white:#fff;--green:#168653;--orange:#ff8b00;--shadow:0 8px 26px #09234b12}
+*{box-sizing:border-box}body{margin:0;background:#e9eef5;color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+button,input,select{font:inherit}button{cursor:pointer}
+.app-shell{max-width:430px;min-height:100vh;margin:0 auto;background:var(--bg);position:relative;overflow:hidden;box-shadow:0 0 44px #001b441c}
+.topbar{height:70px;background:white;display:flex;align-items:center;gap:12px;padding:0 16px;border-bottom:1px solid #edf0f4}
+.avatar{width:38px;height:38px;border-radius:50%;border:0;background:#eaf8ff;color:#07529a;font-weight:800;font-size:15px;box-shadow:inset 0 0 0 1px #c5eaff}
+.brand{font-size:25px;font-weight:800;letter-spacing:-1.2px;color:#002970;flex:1}.brand span{color:#00baf2}
+.icon-btn{width:36px;height:36px;border:0;background:white;border-radius:50%;display:grid;place-items:center;color:#263b5a;position:relative}.icon-btn svg{width:22px;height:22px}.dot{position:absolute;width:7px;height:7px;border-radius:50%;background:#ff4d4f;right:5px;top:5px;border:1px solid white}
+.screen{display:none;min-height:calc(100vh - 70px);padding-bottom:100px}.screen.active{display:block}
+.home-quick{background:#fff;padding:17px 10px 19px;display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.quick{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:9px;padding:2px 0;color:#1e3354;font-size:11px;line-height:1.3;text-align:center;font-weight:600}
+.qicon{width:47px;height:47px;border-radius:16px;display:grid;place-items:center;background:#e9f8ff;color:#0079bf}.qicon svg{width:26px;height:26px;stroke-width:1.9}
+.section{margin-top:10px;background:white;padding:17px 16px 18px}.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}.section-title{font-size:16px;font-weight:750;letter-spacing:-.2px}.viewall{font-size:12px;color:#0079c8;font-weight:700;border:0;background:none}
+.bill-grid{display:grid;grid-template-columns:repeat(4,1fr);row-gap:21px}.bill{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:7px;color:#344563;font-size:11px;font-weight:600;text-align:center;padding:0 2px}.bill-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;background:#f0f7ff;color:#1766b1}.bill-icon svg{width:23px;height:23px}
+.promo{margin:10px 12px 0;background:linear-gradient(110deg,#002970,#0068b5);color:white;border-radius:14px;padding:18px 17px;display:flex;align-items:center;min-height:128px;gap:10px;position:relative;overflow:hidden}.promo:after{content:"";position:absolute;width:145px;height:145px;border:22px solid #ffffff15;border-radius:50%;right:-25px;top:-35px}.promo-copy{position:relative;z-index:1;flex:1}.promo-kicker{font-size:10px;letter-spacing:1.4px;font-weight:800;color:#9ce7ff}.promo h3{font-size:19px;line-height:1.15;margin:7px 0 5px;max-width:220px}.promo p{font-size:11px;line-height:1.4;margin:0;color:#dcecff}.promo-cta{position:relative;z-index:1;border:0;background:#fff;color:#003b82;border-radius:18px;padding:9px 11px;font-size:11px;font-weight:800;white-space:nowrap}
+.service-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px 5px}.service-grid .bill-icon{background:#f4f7fb;color:#37638c}
+.bottom-note{text-align:center;color:#9aa5b5;font-size:10px;padding:22px}
+.fab{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);width:min(300px,calc(100vw - 52px));max-width:378px;z-index:20;border:1px solid #a7e8ff;background:#fff;border-radius:28px;box-shadow:0 0 0 5px #00baf21a,0 8px 26px #00297022;padding:11px 16px;color:#005a9c;font-size:12px;font-weight:800;display:flex;justify-content:center;align-items:center;gap:8px;animation:glow 2.4s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 0 8px #00baf20d,0 8px 30px #00baf244}}.demo-pill{font-size:9px;letter-spacing:.8px;background:#e9f8ff;padding:4px 6px;border-radius:6px;color:#0074ad}
+.page-head{background:white;padding:14px 16px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}.back{border:0;background:#f1f6fb;width:35px;height:35px;border-radius:50%;font-size:20px;color:#163c66}.page-title{font-size:19px;font-weight:800;flex:1}.eyebrow{font-size:11px;color:var(--muted);margin-top:3px}
+.menu-profile{background:white;padding:22px 18px 20px;display:flex;align-items:center;gap:13px;border-bottom:8px solid var(--bg)}.profile-big{width:54px;height:54px;border-radius:50%;background:#e5f7ff;display:grid;place-items:center;font-size:19px;font-weight:800;color:#07529a}.profile-name{font-weight:800;font-size:17px}.profile-sub{font-size:12px;color:var(--muted);margin-top:4px}.menu-list{background:white;padding:6px 0}.menu-item{width:100%;padding:16px 18px;border:0;border-bottom:1px solid #f0f2f5;background:white;display:flex;align-items:center;text-align:left;gap:13px;color:#243b5a}.menu-item:last-child{border-bottom:0}.menu-icon{width:37px;height:37px;border-radius:12px;background:#eff8ff;color:#0877b8;display:grid;place-items:center;font-size:18px}.menu-label{flex:1;font-size:14px;font-weight:700}.menu-desc{font-size:11px;color:var(--muted);font-weight:400;margin-top:3px}.chevron{font-size:22px;color:#98a5b5}
+.content{padding:14px 13px}.hero-card{background:linear-gradient(130deg,#002970,#005ca9);color:white;padding:20px;border-radius:18px;position:relative;overflow:hidden}.hero-card:after{content:"";position:absolute;right:-40px;top:-48px;width:170px;height:170px;border:27px solid #ffffff12;border-radius:50%}.hero-eyebrow{font-size:10px;letter-spacing:1.2px;font-weight:800;color:#a6eaff}.hero-card h2{font-size:24px;line-height:1.15;margin:9px 0}.hero-card p{font-size:12px;line-height:1.5;color:#d9ecff;margin:0;max-width:280px}.hero-actions{display:flex;gap:9px;margin-top:16px;position:relative;z-index:1}.primary,.secondary{border-radius:11px;padding:11px 13px;border:0;font-size:12px;font-weight:800}.primary{background:#00baf2;color:#00376b}.secondary{background:#ffffff17;border:1px solid #ffffff45;color:white}
+.metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}.metric{background:white;border-radius:14px;padding:15px;border:1px solid #edf0f4}.metric-label{font-size:11px;color:var(--muted)}.metric-value{font-size:22px;font-weight:850;margin-top:7px;letter-spacing:-.5px}.metric-foot{font-size:10px;color:#7e8b9d;margin-top:5px}
+.card{background:white;border:1px solid #edf0f4;border-radius:15px;padding:16px;margin-top:12px}.card-title{font-size:15px;font-weight:800}.card-sub{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.4}.row-between{display:flex;align-items:center;justify-content:space-between;gap:10px}.link{border:0;background:none;color:#0077bd;font-size:11px;font-weight:800;padding:5px}
+.obligation{display:flex;align-items:center;gap:11px;padding:13px 0;border-bottom:1px solid #eef1f5}.obligation:last-child{border-bottom:0;padding-bottom:0}.ob-icon{width:40px;height:40px;border-radius:13px;background:#eef8ff;color:#0869a9;display:grid;place-items:center;font-size:18px;flex-shrink:0}.ob-main{flex:1;min-width:0}.ob-name{font-size:13px;font-weight:800}.ob-meta{font-size:10px;color:var(--muted);margin-top:4px}.ob-amount{font-size:13px;font-weight:850;text-align:right}.tag{display:inline-block;margin-top:5px;padding:3px 6px;border-radius:6px;font-size:9px;font-weight:800;background:#fff2db;color:#a35c00}.tag.green{background:#e6f7ed;color:#087543}.pay-btn{border:0;background:#e7f8ff;color:#006da8;border-radius:8px;padding:8px 9px;font-size:10px;font-weight:800;margin-top:6px}
+.notice{background:#f0f8ff;border:1px solid #d7efff;border-radius:12px;padding:12px;font-size:11px;line-height:1.45;color:#315773;margin-top:12px}.notice strong{display:block;color:#07528e;margin-bottom:3px}
+.form-card{background:white;border:1px solid #edf0f4;border-radius:15px;padding:16px;margin-top:12px}.field{display:block;margin-top:13px}.field span{display:block;font-size:11px;font-weight:750;color:#51627a;margin-bottom:6px}.field input,.field select{width:100%;border:1px solid #dce3eb;border-radius:10px;padding:12px;background:#fff;color:#172b4d;outline:none}.field input:focus,.field select:focus{border-color:#00a6df;box-shadow:0 0 0 3px #00baf21b}.full{width:100%;margin-top:16px}.ghost{border:1px solid #d9e3ec;background:white;color:#315773;border-radius:10px;padding:11px 13px;font-size:12px;font-weight:800}
+.sms-overlay{display:none;position:absolute;inset:0;background:#00142c66;z-index:40;align-items:flex-start;justify-content:center;padding:75px 16px 20px}.sms-overlay.open{display:flex}.sms-toast{width:100%;background:#fff;border-radius:18px;box-shadow:0 20px 60px #00152b55;padding:17px}.sms-head{display:flex;gap:10px;align-items:center}.sms-logo{width:36px;height:36px;background:#eaf8ff;color:#006ca5;border-radius:11px;display:grid;place-items:center;font-weight:900}.sms-title{font-size:13px;font-weight:850;flex:1}.sms-time{font-size:10px;color:var(--muted)}.sms-body{font-size:12px;line-height:1.5;color:#43536a;margin:13px 0}.sms-actions{display:flex;gap:8px}.sms-actions button{flex:1}
+.toast{position:absolute;top:78px;left:14px;right:14px;z-index:45;background:#063b68;color:white;border-radius:12px;padding:12px 14px;font-size:12px;box-shadow:var(--shadow);display:none}.toast.show{display:block}
+.chart-bars{display:flex;align-items:flex-end;height:100px;gap:9px;margin-top:15px}.bar-col{flex:1;text-align:center;font-size:9px;color:#7c899b}.bar{background:linear-gradient(#00baf2,#0073b7);border-radius:5px 5px 0 0;margin:0 auto 6px;width:70%;min-height:6px}
+@media(min-width:600px){body{padding:22px 0}.app-shell{border-radius:28px;min-height:840px}.screen{min-height:840px}.fab{position:absolute}.sms-overlay{border-radius:28px}}
+
+/* Screenshot-aligned Paytm home and settings pass */
+body{background:#f4f5f7;color:#17191d}
+.app-shell{background:#f5f6f8;max-width:430px;box-shadow:none}
+.topbar{height:78px;background:#f5f6f8;border:0;padding:0 16px;gap:14px}
+.avatar{width:46px;height:46px;flex:0 0 46px;background:#dce9c6;color:#53643a;box-shadow:none;font-size:17px;font-weight:500}
+.brand{font-size:0;letter-spacing:0;display:flex;align-items:center;gap:3px;white-space:nowrap}
+.brand:before{content:'paytm';font-size:27px;letter-spacing:-1.4px;font-weight:900;color:#092d72}
+.brand:after{content:'♥ UPI';font-size:24px;letter-spacing:-1.2px;font-style:italic;font-weight:800;color:#092d72}
+.brand span{display:none}
+.icon-btn{background:transparent;color:#101318;width:36px;height:36px}
+.icon-btn svg{width:27px;height:27px;stroke-width:1.7}
+.screen{min-height:calc(100vh - 78px);padding-bottom:88px}
+.home-quick{background:transparent;padding:39px 13px 31px;gap:4px}
+.quick{gap:10px;padding:0 1px;color:#373a40;font-size:12px;font-weight:500;line-height:1.25}
+.qicon{width:51px;height:51px;border-radius:50%;background:#074c9d;color:white}
+.qicon svg{width:28px;height:28px;stroke-width:1.8}
+.section{margin:0 12px 12px;border-radius:23px;padding:19px 16px 21px;background:#fff}
+.section-head{margin-bottom:20px}
+.section-title{font-size:19px;letter-spacing:-.4px;font-weight:800;color:#202126}
+.viewall{font-size:13px;color:#2477bf;font-weight:600}
+.bill-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:19px 3px}
+.bill{gap:8px;color:#4b4e54;font-size:12px;font-weight:500;line-height:1.25}
+.bill-icon{width:38px;height:38px;border-radius:0;background:transparent;color:#14579a;font-size:25px;font-weight:400}
+.bill-icon svg{width:25px;height:25px}
+/* Payday Hub is a compact home entry; keep revenue tiles high in the first viewport */
+.payday-home-banner{width:calc(100% - 24px);margin:0 12px 10px;padding:13px 15px;border:1px solid #63cfff;border-radius:18px;background:linear-gradient(105deg,#073b85,#0868b8);color:#fff;display:flex;align-items:center;gap:11px;text-align:left;box-shadow:0 0 0 3px #00baf21c,0 7px 20px #00297024;position:relative;isolation:isolate}.payday-home-banner:before{content:'';position:absolute;inset:4px;border:1px solid #ffffff28;border-radius:13px;pointer-events:none;z-index:-1}.payday-home-banner:focus-visible{outline:3px solid #00baf2;outline-offset:3px}.payday-home-banner:hover{box-shadow:0 0 0 4px #00baf226,0 9px 24px #00297030;transform:translateY(-1px)}
+.payday-banner-mark{width:39px;height:39px;flex:0 0 39px;display:grid;place-items:center;border-radius:13px;background:#ffffff20;border:1px solid #ffffff45;font-size:23px;font-weight:800}
+.payday-banner-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:4px}
+.payday-banner-copy strong{font-size:15px;font-weight:800;letter-spacing:-.2px}
+.payday-banner-copy small{font-size:10px;line-height:1.3;color:#dcecff}
+.payday-banner-cta{display:flex;align-items:center;gap:5px;border-radius:18px;background:#fff;color:#07478c;padding:8px 10px;font-size:10px;font-weight:800;white-space:nowrap}
+.hero-action-layout{margin-top:16px;position:relative;z-index:2}.hero-action-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;position:relative;z-index:2}.hero-action-caption{font-size:12px;color:#dcecff}.hero-view-payments{position:relative;z-index:3;display:inline-flex;align-items:center;gap:5px;background:#ffffff18;border:1px solid #ffffff45;border-radius:10px;color:#fff;font-size:13px;font-weight:750;padding:9px 11px;cursor:pointer;pointer-events:auto}.hero-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:relative;z-index:2}.hero-actions button{width:100%;min-height:39px}.hero-actions .income-action{background:#fff;color:#002970;border-color:#fff}.obligation .tag.green{background:#dff6e9;color:#087443;border:1px solid #a8e3c4}.pay-btn{background:#e4f8ef!important;border:1px solid #9bdcbd!important;color:#087443!important;font-weight:700!important}
+/* Review payment reminder and immediate-pay actions */
+#verify .secondary{width:100%;margin-top:10px;border:1px solid #b9e8f8;background:#eaf9ff;color:#006da6;border-radius:10px;padding:12px 13px;font-size:12px;font-weight:800}
+.reminder-scheduler{margin-top:12px;padding:14px;border:1px solid #cceefa;background:#f3fbff;border-radius:13px}
+.reminder-scheduler[hidden]{display:none}
+.reminder-scheduler-title{font-size:13px;font-weight:800;color:#172b4d;margin-bottom:6px}
+.reminder-scheduler .field{margin-top:10px}
+.reminder-scheduler .field input{width:100%;padding:11px;border:1px solid #dce5ee;border-radius:10px;background:#fff;color:#172b4d}
+.reminder-scheduler .card-sub{font-size:10px;line-height:1.45;margin-top:10px}
+/* Simple amount and due-date filters */
+#obligations .payment-filters{padding:14px;margin:0 0 12px}.payment-filter-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}.payment-filter-heading .card-sub{margin-top:4px}.payment-filter-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 10px}.payment-filters .field{margin-top:11px;min-width:0}.payment-filters .field span{font-size:10px;line-height:1.35}.payment-filters .field input{font-size:12px;padding:11px 8px;min-width:0;width:100%;border:1px solid #dce3eb;border-radius:10px;background:#fff;color:#172b4d}.payment-filter-count{font-size:10px;color:#6b778c;margin-top:11px;padding-top:10px;border-top:1px solid #edf1f5}#obligations #all-obligations .empty-filter-state{padding:18px 3px;text-align:center;color:#718096;font-size:12px;line-height:1.5}
+/* View payments: clearer totals, calm grouping, and no duplicate add actions */
+#obligations .page-head{position:sticky;top:0;z-index:5;box-shadow:0 2px 10px #09234b08}
+#obligations .content{padding:15px 13px 28px}
+#obligations .payments-summary{display:grid;grid-template-columns:1.15fr 1fr;gap:10px;margin-bottom:12px}
+#obligations .payments-summary-card{border-radius:16px;padding:15px 14px;border:1px solid #e7edf4;background:#fff;min-width:0}
+#obligations .payments-summary-card.primary-summary{background:#eaf8ff;border-color:#cdeeff}
+#obligations .summary-label{font-size:11px;color:#65758b;font-weight:650}
+#obligations .summary-value{font-size:23px;font-weight:850;letter-spacing:-.6px;color:#172b4d;margin-top:7px;white-space:nowrap}
+#obligations .summary-foot{font-size:10px;color:#75859a;margin-top:5px}
+#obligations .payments-intro{display:flex;align-items:center;gap:10px;margin:2px 2px 11px}
+#obligations .payments-intro-icon{width:37px;height:37px;border-radius:12px;display:grid;place-items:center;background:#e5f6ff;color:#0877b8;font-size:19px;flex:0 0 37px}
+#obligations .payments-intro-title{font-size:14px;font-weight:800;color:#24364f}
+#obligations .payments-intro-sub{font-size:11px;color:#77869a;margin-top:3px}
+#obligations #all-obligations{padding:4px 14px;margin-top:0}
+#obligations .obligation{padding:15px 0;gap:10px}
+#obligations .ob-icon{width:42px;height:42px;border-radius:14px;background:#eff7ff;font-size:19px}
+#obligations .ob-name{font-size:13px}
+#obligations .ob-meta{font-size:10px;line-height:1.4}
+#obligations .ob-amount{font-size:13px;white-space:nowrap}
+#obligations .notice{margin-top:12px}
+
+.hero-actions button{flex:0 1 auto}
+.hero-actions .income-action{background:#ffffff18;border-color:#ffffff55;color:#fff}
+.income-amount{color:#168653;font-size:14px}
+#income .transaction{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line)}
+#income .transaction:last-child{border-bottom:0}
+.payday-banner-cta b{font-size:20px;line-height:10px}
+.payday-home-banner{cursor:pointer}
+.payday-income-line{display:flex;align-items:center;gap:7px}
+.payday-private-value{filter:blur(5px);user-select:none;transition:filter .2s}
+.payday-private-value.revealed{filter:none}
+.payday-privacy-toggle,.payday-add-source{border:1px solid #ffffff50;background:#ffffff17;color:#fff;border-radius:9px;width:29px;height:29px;display:grid;place-items:center;font-size:15px;flex:0 0 29px}
+.payday-add-source{width:auto;height:29px;padding:0 9px;display:flex;gap:5px;font-size:10px;font-weight:750;white-space:nowrap}
+.payday-banner-copy{position:relative}
+.hero-actions .hero-view-payments{grid-column:1/-1;justify-content:center;background:#ffffff20;border-color:#ffffff65}
+#breakdown-overlay .breakdown-sheet{position:relative;padding-top:24px}
+#breakdown-overlay .breakdown-sheet-head{padding-right:34px}
+#breakdown-overlay .breakdown-close{position:absolute;top:12px;right:12px;z-index:2}
+.breakdown-row-action{flex:0 0 auto;border:1px solid #9bdcbd;background:#e4f8ef;color:#087443;border-radius:9px;padding:8px 9px;font-size:10px;font-weight:800;white-space:nowrap}
+.breakdown-row-action:disabled{background:#f1f5f4;border-color:#dce8e1;color:#168653}
+.reward-progress{display:flex;align-items:center;gap:14px;margin-top:14px}
+.reward-ring{width:68px;height:68px;flex:0 0 68px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#20a66a 0 42%,#e6edf3 42% 100%);position:relative}
+.reward-ring:before{content:'';position:absolute;inset:6px;border-radius:50%;background:#fff}
+.reward-ring strong{position:relative;color:#087443;font-size:17px;font-weight:900}
+.reward-copy{flex:1;min-width:0}
+.reward-copy strong{display:block;color:#087443;font-size:13px;font-weight:850}
+.reward-copy p{font-size:11px;line-height:1.4;color:#5f6f83;margin:5px 0 8px}
+.reward-badge{display:inline-flex;align-items:center;gap:4px;border-radius:20px;background:#e3f8ed;color:#087443;padding:5px 8px;font-size:10px;font-weight:800;border:1px solid #b8e8ce}
+.reward-sparkle{color:#e49a00;font-size:14px}
+.income-strip{display:flex;align-items:center;gap:11px;background:#fff;border:1px solid #e4edf5;border-radius:15px;padding:12px 13px;margin:12px 0}
+.income-strip-icon{width:39px;height:39px;border-radius:13px;background:#e4f8ef;color:#087443;display:grid;place-items:center;font-size:21px;font-weight:850;flex:0 0 39px}
+.income-strip-copy{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+.income-strip-copy span{font-size:10px;color:#718096;font-weight:650}
+.income-strip-copy strong{font-size:17px;color:#172b4d;font-weight:850}
+.income-strip-action{border:1px solid #b9e6ce;background:#eaf8f0;color:#087443;border-radius:10px;padding:9px 10px;font-size:11px;font-weight:800;white-space:nowrap;display:flex;align-items:center;gap:4px}
+.insight-label{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.insight-icon{width:27px;height:27px;border-radius:9px;display:grid;place-items:center;font-size:16px;font-weight:850}
+.income-icon{background:#e4f8ef;color:#087443}
+.outflow-icon{background:#fff1df;color:#b76500}
+#obligations .summary-label{display:flex;align-items:center;gap:6px;line-height:1.35}
+.payments-summary-icon{width:23px;height:23px;border-radius:7px;display:inline-grid;place-items:center;background:#dff3ff;color:#0877b8;font-size:14px;flex:0 0 23px}
+.payments-summary-icon.due-icon{background:#fff1df;color:#b76500}
+#obligations .payments-intro-icon{font-size:19px}
+.payday-banner-divider{width:1px;align-self:stretch;background:#ffffff45;margin:1px 0}
+.payday-banner-copy{gap:4px}
+.payday-obligation-label{font-size:10px;line-height:1.2;color:#dcecff}
+.payday-banner-copy .payday-obligation-total{font-size:21px;line-height:1.05;font-weight:850;letter-spacing:-.45px;color:#fff}
+.payday-payment-count{display:flex;align-items:center;gap:4px;font-size:10px;line-height:1.2;color:#dcecff;white-space:nowrap}
+.payday-calendar{font-size:12px;color:#b9e4ff}
+.payday-obligations-copy{flex:1.05}
+.payday-banner-cta{padding:8px 9px}
+.recharge-compact{padding:13px 16px 14px!important;margin-bottom:10px!important}
+.recharge-compact .section-head{margin:0}
+.recharge-compact .section-title{font-size:17px}
+/* home promo composition mirrors the real app's reward strip + offer cards */
+.home-offer-strip{margin:13px 12px 17px;background:#c9f2f8;border-radius:24px;min-height:67px;display:flex;align-items:center;gap:13px;padding:10px 16px;color:#24272b}
+.home-offer-strip .gift{font-size:35px;line-height:1}
+.home-offer-strip strong{font-size:16px;display:block;margin-bottom:4px}
+.home-offer-strip small{font-size:12px;color:#43484f}
+.home-offer-strip .arr{font-size:27px;margin-left:auto}
+.home-offer-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 12px 16px}
+.offer-tile{border:0;background:#fff;border-radius:24px;padding:18px 16px;text-align:left;color:#292c31;min-height:94px;display:flex;align-items:center;gap:12px;font-size:14px;line-height:1.35}
+.offer-tile.tall{grid-row:span 2;min-height:168px;display:block;padding-top:23px}
+.offer-tile .offer-ico{font-size:23px;color:#9ca6a8;display:block;margin-bottom:18px}
+.offer-tile small{display:block;color:#858990;margin-top:4px;font-size:12px}
+.offer-chips{display:flex;gap:8px;overflow:hidden;white-space:nowrap;margin:0 12px 16px}
+.offer-chip{background:#fff;border-radius:20px;padding:10px 13px;font-size:12px;color:#444951;white-space:nowrap;flex:0 0 auto}
+.ad-banner{margin:0 12px 12px;border-radius:16px;min-height:110px;background:linear-gradient(115deg,#b52b32,#f6a14b);color:white;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;text-align:center;padding:20px}
+/* profile/settings screenshot structure */
+#menu{background:#f4f5f7}
+#menu .page-head{height:78px;background:#f4f5f7;border:0;padding:0 16px;justify-content:center;position:relative}
+#menu .page-head .back{position:absolute;left:13px;background:transparent;border-radius:0;width:30px;height:35px;font-size:28px;font-weight:300;color:#222}
+#menu .page-head>div{flex:none;text-align:center}
+#menu .page-title{font-size:0}
+#menu .page-title:after{content:'paytm';font-size:27px;letter-spacing:-1.4px;font-weight:900;color:#092d72}
+#menu .eyebrow{display:none}
+#menu .menu-profile{margin:0 12px;background:#fff;border-radius:24px 24px 0 0;padding:18px 17px 17px;border:0;gap:14px}
+#menu .profile-big{width:55px;height:55px;flex:0 0 55px;border-radius:50%;background:#e9f3f8;border:2px solid #e3d5e8;color:#a6bac7;font-size:0;position:relative}
+#menu .profile-big:after{content:'●';font-size:23px;color:#fff;position:absolute;top:7px}
+#menu .profile-name{font-size:17px;color:#17191d}
+#menu .profile-sub{font-size:12px;color:#333;margin-top:7px}
+#menu .menu-list{margin:0 12px;background:#fff;padding:0 0 5px;border-radius:0 0 24px 24px;overflow:hidden}
+#menu .menu-list:before{content:'Settings';display:block;font-size:23px;font-weight:800;padding:18px 20px 13px;color:#202126}
+#menu .menu-item{padding:15px 17px;min-height:68px;gap:13px;border-bottom:1px solid #ededed;color:#24272b}
+#menu .menu-icon{width:34px;height:34px;flex:0 0 34px;border-radius:0;background:transparent;color:#30363b;font-size:23px}
+#menu .menu-label{font-size:14px;font-weight:500;color:#2d3035}
+#menu .menu-desc{font-size:12px;line-height:1.3;color:#85888d;margin-top:4px;font-weight:400}
+#menu .chevron{font-size:23px;color:#333}
+#menu .bottom-note{margin:13px 12px 0;background:#082f72;color:white;border-radius:12px;font-size:11px;padding:16px 10px}
+.fab{bottom:18px;width:auto;max-width:none;padding:9px 13px;border-radius:22px;background:#073f91;color:white;border:1px solid #53cfff;box-shadow:0 0 0 4px #00baf21a,0 5px 18px #00297038;font-size:11px;left:auto;right:13px;transform:none;animation:glow 2.4s ease-in-out infinite}
+.demo-pill{background:#dff7ff;color:#00568a}
+@media(min-width:600px){.app-shell{border-radius:0}.fab{position:fixed;left:calc(50% + 110px);right:auto}.sms-overlay{border-radius:0}}
+
+/* Payday Hub hierarchy and breakdown interactions */
+#hub .hero-card{box-shadow:0 7px 20px #0029701a}
+#hub .metrics .metric{position:relative;padding:15px 13px 14px 48px;min-height:105px;cursor:pointer;transition:border-color .15s,transform .15s}
+#hub .metrics .metric:before{position:absolute;left:13px;top:15px;width:27px;height:27px;border-radius:9px;display:grid;place-items:center;font-size:15px;font-weight:800;background:#e5f6ff;color:#0877b8}
+#hub .metrics .metric:first-child:before{content:'₹';background:#e7f2ff;color:#07529a}
+#hub .metrics .metric:nth-child(2):before{content:'◷';background:#fff2d9;color:#a35c00}
+#hub .metrics .metric:first-child{background:linear-gradient(135deg,#fff,#f5faff);border-color:#d9eafb}
+#hub .metrics .metric:nth-child(2){background:linear-gradient(135deg,#fff,#fffaf1);border-color:#f4e7ca}
+#hub .metrics .metric:hover{transform:translateY(-1px);border-color:#9ddcf7}
+#hub .metric-label{line-height:1.3;font-weight:700;color:#5e6c80}
+#hub .metric-foot{color:#0877b8;font-weight:700}
+.breakdown-trigger{border:0;background:transparent;text-align:left;width:100%;padding:0;color:inherit;cursor:pointer}
+.breakdown-trigger:focus-visible{outline:2px solid #00baf2;outline-offset:4px;border-radius:8px}
+#breakdown-overlay{display:none;position:absolute;inset:0;background:#00142c75;z-index:50;align-items:flex-end;justify-content:center;padding:12px}
+#breakdown-overlay.open{display:flex}
+.breakdown-sheet{width:100%;background:#fff;border-radius:22px;padding:19px 17px 17px;box-shadow:0 20px 60px #00152b55;max-height:80%;overflow:auto}
+.breakdown-sheet-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:13px}
+.breakdown-sheet-title{font-size:18px;font-weight:850;flex:1;color:#172b4d}
+.breakdown-sheet-sub{font-size:11px;color:#718096;margin-top:4px}
+.breakdown-close{border:0;background:#f0f4f8;border-radius:50%;width:32px;height:32px;font-size:21px;color:#344563}
+.breakdown-total{font-size:25px;font-weight:850;color:#07529a;margin:10px 0 13px}
+.breakdown-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #edf0f4}
+.breakdown-row:last-child{border-bottom:0}
+.breakdown-row-icon{width:36px;height:36px;display:grid;place-items:center;border-radius:11px;background:#eaf7ff;color:#0877b8;font-size:17px;flex-shrink:0}
+.breakdown-row-main{flex:1;min-width:0}.breakdown-row-name{font-size:12px;font-weight:800}.breakdown-row-meta{font-size:10px;color:#748399;margin-top:3px}.breakdown-row-amount{font-size:12px;font-weight:850;white-space:nowrap}
+.pay-btn{transition:transform .15s,box-shadow .15s}.pay-btn:not(:disabled):hover{transform:translateY(-1px);box-shadow:0 3px 8px #16865322}
+.pay-btn.paid-reward{background:#d9f8e8!important;border:1px solid #51c98b!important;color:#087443!important}
+.reward-banner{display:none;margin-top:13px;background:linear-gradient(100deg,#e2f9ec,#f3fff8);border:1px solid #9bdfb8;border-radius:13px;padding:12px;text-align:left;color:#087443;font-size:12px;line-height:1.4}
+.reward-banner.show{display:block}.reward-banner strong{display:block;font-size:13px;margin-bottom:3px}
+
+/* ===== Hero journey pass ===== */
+#simulate-sms{display:none!important}
+button.brand{border:0;background:transparent;padding:0;cursor:pointer;text-align:left;flex:1}
+/* Step 1: consent */
+.consent-overlay{display:none;position:absolute;inset:0;z-index:70;background:#00142c8c;align-items:flex-start;justify-content:center;padding:70px 14px 20px}
+.consent-overlay.open{display:flex}
+.consent-sheet{width:100%;background:#fff;border-radius:22px;padding:22px 18px 18px;box-shadow:0 20px 60px #00152b55}
+.consent-sheet[hidden]{display:none}
+.consent-sheet h2{font-size:20px;line-height:1.2;margin:12px 0 8px;color:#172b4d}
+.consent-sheet p{font-size:12px;line-height:1.5;color:#51627a;margin:0 0 12px}
+.consent-icon,.consent-check{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:26px;background:#e5f6ff;color:#0877b8}
+.consent-check{border-radius:50%;background:#e3f8ed;color:#168653;font-size:28px;font-weight:900;animation:pop .35s ease-out}
+@keyframes pop{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
+.consent-row{display:flex;gap:11px;align-items:center;padding:10px 0;border-bottom:1px solid #eef1f5}
+.consent-row span{width:34px;height:34px;border-radius:11px;background:#f0f8ff;color:#0877b8;display:grid;place-items:center;font-size:16px;flex:0 0 34px}
+.consent-row.done span{background:#e3f8ed;color:#168653;font-weight:900}
+.consent-row strong{display:block;font-size:13px;color:#172b4d}.consent-row small{font-size:11px;color:#6b778c}
+.consent-note{font-size:10px;color:#7a8797;margin-top:10px}
+/* Home: expense manager entry and Paytm share nudge */
+.expense-home-banner{width:calc(100% - 24px);margin:0 12px 10px;padding:12px 15px;border:1px solid #cfe9fb;border-radius:18px;background:#fff;color:#172b4d;display:flex;align-items:center;gap:11px;text-align:left}
+.expense-banner-mark{width:39px;height:39px;flex:0 0 39px;display:grid;place-items:center;border-radius:13px;background:#e5f6ff;color:#0877b8;font-size:22px}
+.expense-home-banner .payday-banner-copy small{color:#6b778c}
+.expense-banner-cta{font-size:22px;color:#0877b8}
+.paytm-share-card{width:calc(100% - 24px);margin:0 12px 12px;padding:15px;border:1px solid #bfe9d3;border-radius:20px;background:linear-gradient(135deg,#f2fff8,#fff);text-align:left;color:#172b4d;display:block}
+.share-top{display:flex;gap:13px;align-items:center}
+.share-ring{width:66px;height:66px;flex:0 0 66px;border-radius:50%;display:grid;place-items:center;position:relative;background:conic-gradient(#20a66a 0 0%,#e6edf3 0 100%)}
+.share-ring:before{content:'';position:absolute;inset:7px;border-radius:50%;background:#fff}
+.share-ring strong{position:relative;font-size:16px;color:#087443;font-weight:900}
+.share-copy{flex:1;min-width:0}.share-kicker{font-size:9px;letter-spacing:1.1px;font-weight:800;color:#087443}
+.share-copy strong{display:block;font-size:15px;margin-top:4px}
+.share-copy p{margin:5px 0 0;font-size:11px;line-height:1.4;color:#51627a}
+.share-rewards{margin-top:12px;padding-top:11px;border-top:1px dashed #bfe3cf}
+.share-rewards-head{display:flex;justify-content:space-between;font-size:11px;font-weight:800;color:#087443}
+.reward-pips{display:flex;gap:6px;margin:8px 0}
+.reward-pips i{flex:1;height:7px;border-radius:5px;background:#e3ebe7}.reward-pips i.on{background:#20a66a}
+.share-rewards-msg{font-size:11px;color:#51627a;line-height:1.4}
+/* Step 3: salary + planned entry */
+.salary-card{background:linear-gradient(130deg,#0a6b45,#16935e);color:#fff;border-radius:18px;padding:17px 18px;margin-bottom:12px}
+.salary-top{display:flex;justify-content:space-between;align-items:center}
+.salary-kicker{font-size:10px;letter-spacing:1.2px;font-weight:800;color:#c8f5dd}
+.sensed-chip{font-size:10px;font-weight:800;background:#ffffff26;border:1px solid #ffffff55;border-radius:20px;padding:4px 8px}
+.salary-amount{font-size:30px;font-weight:900;letter-spacing:-.8px;margin-top:8px}
+.salary-meta{font-size:11px;color:#d9f7e7;margin-top:4px}
+.planned-entry{width:100%;text-align:left;border:1px solid #cdeeff;background:#fff;border-radius:16px;padding:15px;color:#172b4d;box-shadow:0 4px 14px #00297010}
+.planned-entry-head{display:flex;justify-content:space-between;align-items:center}
+.planned-entry-title{font-size:15px;font-weight:850}.planned-entry-sub{font-size:11px;color:#6b778c;margin-top:3px}
+.planned-entry-cta{font-size:12px;font-weight:800;color:#0877b8;background:#eaf8ff;border-radius:10px;padding:7px 10px}
+.planned-entry-left{display:flex;justify-content:space-between;align-items:baseline;margin-top:13px;font-size:12px;color:#51627a}
+.planned-entry-left strong{font-size:20px;color:#b45d00;font-weight:900}
+/* Step 4/5: left to pay + priority list */
+.ltp-card{background:linear-gradient(130deg,#002970,#005ca9);color:#fff;border-radius:18px;padding:18px;transition:box-shadow .3s}
+.ltp-card.flash{box-shadow:0 0 0 4px #20a66a88}
+.ltp-label{font-size:10px;letter-spacing:1.3px;font-weight:800;color:#a6eaff}
+.ltp-amount{font-size:32px;font-weight:900;letter-spacing:-.8px;margin:6px 0 10px}
+.ltp-bar{height:8px;border-radius:6px;background:#ffffff2e;overflow:hidden;margin-top:9px}
+.planned-entry .ltp-bar,.budget-total-bar .ltp-bar{background:#e8eef5}
+.ltp-fill{height:100%;border-radius:6px;background:#2ad38b;width:0;transition:width .6s ease}
+.ltp-stats{display:flex;justify-content:space-between;font-size:11px;color:#d9ecff;margin-top:8px}
+.ltp-after{font-size:11px;color:#bfe0ff;margin-top:8px;padding-top:8px;border-top:1px solid #ffffff26}
+.add-payment-btn{width:100%;margin:12px 0 0;border:1.5px dashed #8fd3f3;background:#f3fbff;color:#0068a8;border-radius:13px;padding:12px;font-size:13px;font-weight:800}
+.prio-group{margin-top:12px;background:#fff;border:1px solid #edf0f4;border-radius:15px;padding:4px 14px}
+.prio-head{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:850;letter-spacing:.6px;text-transform:uppercase;color:#51627a;padding:12px 0 4px}
+.prio-dot{width:8px;height:8px;border-radius:50%}
+.prio-High{background:#e5484d}.prio-Medium{background:#f5a524}.prio-Low{background:#30a46c}
+.pl-row.just-paid{animation:paidflash 1.6s ease}
+@keyframes paidflash{0%,40%{background:#e3f8ed}100%{background:transparent}}
+.chip-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.label-chip{font-size:9px;font-weight:800;padding:3px 7px;border-radius:20px;background:#eef3fb;color:#40587a;border:1px solid #dbe5f2}
+.label-chip.ai{background:#f3edff;color:#6b3fd1;border-color:#e0d4fb}
+.rem-note{font-size:10px;color:#0877b8;font-weight:700;margin-top:5px}
+.row-actions{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.manage-btn{border:1px solid #d9e3ec;background:#fff;color:#315773;border-radius:8px;padding:6px 8px;font-size:10px;font-weight:800}
+.filter-details{padding:12px 14px}.filter-details summary{font-size:13px;font-weight:800;cursor:pointer;color:#315773}
+/* Step 6: tags */
+.chip-set{display:flex;flex-wrap:wrap;gap:7px}
+.tag-toggle{border:1px solid #d9e3ec;background:#fff;color:#40587a;border-radius:20px;padding:7px 11px;font-size:11px;font-weight:700}
+.tag-toggle.on{background:#e5f6ff;border-color:#00a6df;color:#00578f}
+.label-add{display:flex;gap:8px;margin-top:9px}.label-add input{flex:1;min-width:0;border:1px solid #dce3eb;border-radius:10px;padding:10px;font-size:12px}
+/* Step 7: AI suggestion */
+.ai-suggest{margin-top:12px;border:1px solid #d9c9fb;background:linear-gradient(135deg,#faf7ff,#fff);border-radius:16px;padding:14px;animation:pop .35s ease-out}
+.ai-suggest[hidden]{display:none}
+.ai-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.ai-badge{font-size:10px;font-weight:850;color:#6b3fd1;background:#efe7ff;border-radius:20px;padding:4px 9px}
+.ai-suggest-kicker{font-size:11px;font-weight:800;color:#3d2a73}
+.ai-suggest-main{display:flex;gap:10px;align-items:center}
+.ai-suggest-main .ob-icon{background:#efe7ff;color:#6b3fd1}
+.ai-evidence{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.ai-evidence span{font-size:10px;background:#fff;border:1px solid #e6dcfb;border-radius:8px;padding:4px 7px;color:#4a3a7a}
+.ai-question{font-size:13px;font-weight:800;margin:4px 0 10px;color:#172b4d}
+/* Step 8: manage */
+.manage-head{display:flex;align-items:center;gap:11px;margin-top:0}
+.manage-section{font-size:11px;font-weight:850;letter-spacing:.5px;text-transform:uppercase;color:#6b778c;margin:16px 0 8px}
+.manage-section:first-child{margin-top:0}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.seg button{border:1px solid #d9e3ec;background:#fff;border-radius:10px;padding:9px;font-size:12px;font-weight:800;color:#40587a}
+.seg button.on{background:#002970;border-color:#002970;color:#fff}
+.switch-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #f0f2f5;font-size:13px;color:#24364f;cursor:pointer}
+.switch-row input{position:absolute;opacity:0;pointer-events:none}
+.switch-row i{width:40px;height:23px;border-radius:20px;background:#cfd8e3;position:relative;flex:0 0 40px;transition:background .2s}
+.switch-row i:after{content:'';position:absolute;left:3px;top:3px;width:17px;height:17px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px #0003}
+.switch-row input:checked+i{background:#00a6df}.switch-row input:checked+i:after{left:20px}
+.field-pair{display:grid;grid-template-columns:1.3fr 1fr;gap:10px}
+.field-pair .field{margin-top:6px}
+/* Steps 10-12: analytics + budgets */
+.period-bar{display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid #edf0f4;border-radius:13px;padding:6px 8px}
+.period-bar strong{font-size:14px}
+.period-arrow{border:0;background:#f1f6fb;border-radius:50%;width:30px;height:30px;font-size:18px;color:#163c66}
+.period-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px;background:#e9eef5;border-radius:11px;padding:4px}
+.period-tab{border:0;background:transparent;border-radius:8px;padding:8px;font-size:12px;font-weight:800;color:#51627a}
+.period-tab.active{background:#fff;color:#002970;box-shadow:0 1px 4px #0001}
+.mm-summary{display:grid;grid-template-columns:repeat(3,1fr);background:#fff;border:1px solid #edf0f4;border-radius:14px;margin-top:10px;padding:12px 6px;text-align:center}
+.mm-summary div+div{border-left:1px solid #edf0f4}
+.mm-summary span{display:block;font-size:10px;color:#6b778c;font-weight:700}
+.mm-summary strong{display:block;font-size:15px;font-weight:850;margin-top:4px}
+.mm-in{color:#0b6fb8}.mm-out{color:#d64545}
+.ai-card{border-color:#e0d4fb;background:linear-gradient(135deg,#faf7ff,#fff)}
+.ai-list{margin:0;padding-left:18px;font-size:12px;line-height:1.5;color:#33415c}
+.ai-list li{margin-bottom:6px}.ai-list b{color:#172b4d}
+.donut-wrap{display:grid;place-items:center;margin:14px 0 6px}
+.donut{width:150px;height:150px;border-radius:50%;display:grid;place-items:center}
+.donut-hole{width:92px;height:92px;border-radius:50%;background:#fff;display:grid;place-items:center;align-content:center;text-align:center}
+.donut-hole span{font-size:10px;color:#6b778c}.donut-hole strong{font-size:15px}
+.cat-row{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid #f0f2f5;font-size:12px}
+.cat-row:last-child{border-bottom:0}
+.cat-pct{min-width:40px;text-align:center;font-size:10px;font-weight:850;color:#fff;border-radius:6px;padding:3px 0}
+.cat-name{flex:1;font-weight:700}.cat-amt{font-weight:850}
+.sum-label{font-size:11px;font-weight:850;color:#6b778c;text-transform:uppercase;letter-spacing:.5px;margin:15px 0 7px}
+.stack-bar{display:flex;height:12px;border-radius:7px;overflow:hidden;background:#eef2f6}
+.stack-bar i{display:block;height:100%}
+.app-row{display:flex;align-items:center;gap:8px;padding:8px 0;font-size:12px;border-bottom:1px solid #f0f2f5}
+.app-row:last-child{border-bottom:0}
+.app-dot{width:10px;height:10px;border-radius:3px}
+.app-row .cat-name{font-weight:700}.app-row small{color:#6b778c;font-size:10px}
+.type-row{display:flex;justify-content:space-between;font-size:12px;padding:7px 0;border-bottom:1px solid #f0f2f5}
+.type-row:last-child{border-bottom:0}
+.bar.current{background:linear-gradient(#20a66a,#0f7a4a)}
+.bud-row{padding:11px 0;border-bottom:1px solid #f0f2f5}
+.bud-row:last-child{border-bottom:0}
+.bud-top{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;font-weight:800}
+.bud-top input{width:92px;border:1px solid #dce3eb;border-radius:9px;padding:7px 8px;font-size:12px;text-align:right}
+.bud-bar{height:7px;border-radius:5px;background:#edf2f7;margin-top:7px;overflow:hidden}
+.bud-fill{height:100%;border-radius:5px;background:#20a66a}
+.bud-fill.warn{background:#f5a524}.bud-fill.over{background:#e5484d}
+.bud-meta{display:flex;justify-content:space-between;font-size:10px;color:#6b778c;margin-top:5px}
+.bud-meta .warn{color:#b45d00;font-weight:800}.bud-meta .over{color:#c42b2b;font-weight:800}
+.push-note{position:absolute;top:10px;left:12px;right:12px;z-index:80;background:#fffffff7;border:1px solid #dfe6ee;border-radius:16px;padding:11px 13px;box-shadow:0 12px 34px #00152b33;transform:translateY(-140%);transition:transform .35s ease}
+.push-note{opacity:0;visibility:hidden}.push-note.show{transform:translateY(0);opacity:1;visibility:visible}
+.push-app{font-size:10px;color:#6b778c;margin-bottom:4px}.push-app b{color:#092d72}
+.push-note strong{display:block;font-size:13px;color:#172b4d}
+.push-note div:last-child{font-size:12px;color:#44546a;margin-top:2px;line-height:1.4}
+
+#hub .expense-home-banner,#hub .paytm-share-card{width:100%;margin:12px 0 0}
+.move-cta{width:100%;margin-top:12px;border:1px solid #20a66a;background:#20a66a;color:#fff;border-radius:12px;padding:11px 12px;font-size:12px;font-weight:800;display:flex;justify-content:space-between;align-items:center}
+.move-cta span{font-size:18px;line-height:10px}
+.move-head{font-size:11px;font-weight:850;letter-spacing:.5px;text-transform:uppercase;color:#6b778c;margin:14px 0 2px}
+.move-app{font-size:9px;font-weight:800;border-radius:6px;padding:2px 6px;background:#eef2f6;color:#51627a;margin-left:4px}
+.move-reward{background:#e3f8ed;border:1px solid #b8e8ce;border-radius:12px;padding:10px 12px;font-size:11px;line-height:1.45;color:#087443;margin-top:4px}
+.move-hint{font-size:10px;color:#087443;font-weight:700;margin-top:3px}
+/* ===== Phone bezel + Payday Hub guide ===== */
+.viewport{position:relative}
+.status-bar,.home-indicator{display:none}
+.tour{position:absolute;inset:0;z-index:75}
+.tour[hidden]{display:none}
+.tour-spot{position:absolute;border-radius:18px;box-shadow:0 0 0 2px #00baf2,0 0 0 9999px #00142ca6;transition:top .3s,left .3s,width .3s,height .3s;pointer-events:none}
+.tour-tip{position:absolute;left:14px;right:14px;background:#fff;border-radius:16px;padding:14px 15px 13px;box-shadow:0 14px 40px #00152b55;transition:top .3s}
+.tour-arrow{position:absolute;width:14px;height:14px;background:#fff;transform:rotate(45deg);border-radius:2px}
+.tour-tip.below .tour-arrow{top:-6px}.tour-tip.above .tour-arrow{bottom:-6px}
+.tour-step{font-size:10px;font-weight:850;letter-spacing:1px;color:#0877b8}
+.tour-title{font-size:15px;font-weight:850;color:#172b4d;margin:5px 0 4px}
+.tour-text{font-size:12px;line-height:1.5;color:#44546a}
+.tour-actions{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.tour-dots{display:flex;gap:5px}.tour-dots i{width:6px;height:6px;border-radius:50%;background:#d5dee8}.tour-dots i.on{background:#00baf2;width:16px;border-radius:4px}
+.tour-btns{display:flex;gap:8px}
+.tour-skip{border:0;background:none;color:#6b778c;font-size:12px;font-weight:800;padding:8px}
+.tour-next{border:0;background:#00baf2;color:#00376b;border-radius:10px;padding:9px 16px;font-size:12px;font-weight:850}
+.tour-help{border:1px solid #cfe9fb;background:#f0f9ff;color:#0877b8;border-radius:18px;padding:7px 11px;font-size:11px;font-weight:800;white-space:nowrap}
+@media(min-width:600px){
+ body{min-height:100vh;margin:0;padding:24px 0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 30%,#eef3f9,#d6dee9)}
+ .app-shell{width:414px;max-width:none;height:min(868px,calc(100vh - 48px));min-height:0;margin:0;border:12px solid #101114;border-radius:58px;box-shadow:0 0 0 2px #3a3d44,0 0 0 4px #17181c,0 40px 90px #0b1a3a55;display:flex;flex-direction:column;overflow:hidden}
+ .viewport{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+ .viewport::-webkit-scrollbar{display:none}
+ .screen{min-height:0}
+ .status-bar{display:flex;flex:0 0 46px;align-items:center;justify-content:space-between;padding:6px 28px 0 34px;background:#f5f6f8;font-size:15px;font-weight:700;color:#111;position:relative;z-index:60}
+ .status-bar:after{content:'';position:absolute;left:50%;top:9px;transform:translateX(-50%);width:118px;height:33px;border-radius:20px;background:#0c0d10}
+ .sb-icons{display:flex;gap:6px;align-items:center}
+ .home-indicator{display:block;position:absolute;left:50%;bottom:7px;transform:translateX(-50%);width:132px;height:5px;border-radius:3px;background:#111;z-index:90;pointer-events:none}
+ .toast{top:120px}
+ .push-note{top:52px}
+ .consent-overlay{padding-top:96px}
+}
+/* Tap a payment row to manage it; paid on another app */
+[data-manage].obligation,[data-manage].breakdown-row{cursor:pointer;border-radius:10px;transition:background .15s}
+[data-manage].obligation:hover,[data-manage].breakdown-row:hover{background:#f5faff}
+.row-hint{font-size:9px;color:#8a97ab;margin-top:4px}
+.paid-else{border:1px solid #f1dfb8;background:linear-gradient(135deg,#fffaf0,#fff)}
+.paid-else .card-title{font-size:14px}
+.app-pick{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.app-pick button{border:1px solid #d9e3ec;background:#fff;color:#40587a;border-radius:20px;padding:7px 11px;font-size:11px;font-weight:700}
+.app-pick button.on{background:#fff2db;border-color:#e0a53b;color:#8a5200}
+.paid-else-btn{width:100%;margin-top:12px;border:1px solid #e0a53b;background:#fff2db;color:#8a5200;border-radius:10px;padding:11px;font-size:12px;font-weight:850}
+.paid-else-done{display:flex;align-items:center;gap:10px;font-size:12px;color:#51627a;line-height:1.45}
+.paid-else-done b{color:#172b4d}
+.paid-else-nudge{margin-top:10px;background:#e3f8ed;border:1px solid #b8e8ce;border-radius:10px;padding:9px 11px;font-size:11px;color:#087443;line-height:1.4}
+.undo-paid{border:0;background:none;color:#0077bd;font-size:11px;font-weight:800;padding:8px 0 0}
+.tag.else{background:#fff2db;color:#8a5200;border:1px solid #f1dfb8}
+
+/* ===== Home Bills layer (Case 2: Recharge Engagement) ===== */
+.hb-home{margin:0 12px 10px;background:#fff;border:1px solid #dfeaf5;border-radius:16px;padding:14px 14px 12px;width:calc(100% - 24px);text-align:left;display:block}
+.hb-home-top{display:flex;align-items:center;gap:12px}
+.hb-mini-ring{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;flex:0 0 46px}
+.hb-mini-ring i{width:36px;height:36px;border-radius:50%;background:#fff;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:850;color:#092d72}
+.hb-home-copy{flex:1}.hb-home-copy strong{display:block;font-size:15px;color:#092d72;letter-spacing:-.2px}.hb-home-copy small{display:block;font-size:11.5px;color:#5e6c84;margin-top:2px;line-height:1.35}
+.hb-home-cta{color:#0077bd;font-weight:850;font-size:20px}
+.hb-icons{display:flex;gap:8px;margin-top:12px}
+.hb-ic{flex:1;border-radius:11px;background:#f3f6fa;padding:7px 2px 6px;text-align:center;font-size:10px;font-weight:700;color:#5e6c84;position:relative}
+.hb-ic .g{display:block;font-size:16px;line-height:18px;margin-bottom:2px;color:#30507a}
+.hb-ic.on{background:#e6f7ee;color:#0d6b40}.hb-ic.on .g{color:#0d6b40}
+.hb-ic.on:after{content:'✓';position:absolute;top:-5px;right:-3px;width:15px;height:15px;border-radius:50%;background:#168653;color:#fff;font-size:9px;line-height:15px}
+.bills-grid{display:grid;grid-template-columns:repeat(4,1fr);row-gap:16px;margin-top:14px}
+.bills-grid button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;font-weight:650;color:#344563}
+.bills-grid .bi{width:44px;height:44px;border-radius:14px;background:#eef6ff;color:#1766b1;display:grid;place-items:center;font-size:19px}
+/* recharge */
+.num-card{display:flex;align-items:center;gap:12px}
+.op-logo{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:13px;color:#fff;flex:0 0 42px}
+.op-logo.jio{background:#0f3cc9}.op-logo.mv{background:#f08a00}.op-logo.tp{background:#7b1fa2}.op-logo.ai{background:#e40000}.op-logo.in{background:#f36f21}
+.plan{border:1.5px solid #e2e8f0;border-radius:14px;padding:13px 14px;margin-top:10px;display:flex;justify-content:space-between;align-items:center;background:#fff;width:100%;text-align:left}
+.plan.on{border-color:#00baf2;background:#f2fbff}
+.plan b{font-size:18px;color:#092d72}.plan small{display:block;color:#5e6c84;font-size:11.5px;margin-top:3px}
+/* recharge success + cross-sell */
+.rs-hero{text-align:center;padding:22px 16px 6px}
+.rs-tick{width:62px;height:62px;border-radius:50%;margin:0 auto 10px;background:#22a06b;color:#fff;font-size:32px;display:grid;place-items:center;box-shadow:0 0 0 8px #e3f8ed}
+.rs-hero h2{margin:6px 0 2px;font-size:20px}.rs-hero .amt{font-size:30px;font-weight:850;color:#092d72;margin-top:6px}
+.xsell{margin:14px 12px 0;border-radius:18px;background:linear-gradient(140deg,#fff8ec,#ffffff 60%);border:1.5px solid #ffd89a;padding:15px 15px 14px;position:relative;animation:pop .45s ease both}
+@keyframes pop{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
+.xsell-k{font-size:10.5px;font-weight:850;letter-spacing:.6px;color:#a35c00}
+.xsell h3{margin:6px 0 3px;font-size:16px;color:#172b4d;letter-spacing:-.2px}
+.xsell p{margin:0;font-size:12px;color:#5e6c84;line-height:1.45}
+.xsell-bill{display:flex;align-items:center;gap:11px;background:#fff;border:1px solid #f1e3c8;border-radius:13px;padding:10px 11px;margin:12px 0}
+.xsell-bill .amt{margin-left:auto;text-align:right;font-weight:850;color:#172b4d}.xsell-bill .amt small{display:block;font-size:10.5px;color:#c25700;font-weight:750}
+.src-note{font-size:10.5px;color:#7a8797;margin-top:8px}
+/* bill review */
+.bill-head{display:flex;align-items:center;gap:12px}
+.kv{display:flex;justify-content:space-between;font-size:12.5px;padding:9px 0;border-bottom:1px dashed #e4e9ef;color:#5e6c84}.kv b{color:#172b4d;font-weight:750}.kv:last-child{border-bottom:0}
+.found-chip{display:inline-flex;align-items:center;gap:5px;background:#e6f7ee;color:#0d6b40;border-radius:20px;padding:4px 9px;font-size:10.5px;font-weight:800}
+.fee-free{color:#0d6b40!important}
+.bc-mark{display:flex;align-items:center;gap:8px;font-size:11px;color:#5e6c84;margin-top:10px}.bc-mark span{background:#eef3fb;border-radius:6px;padding:3px 7px;font-weight:850;color:#253f7a;font-size:10px}
+/* status tracker */
+.steps{position:relative;margin:6px 0 4px}
+.step{display:flex;gap:12px;padding:10px 0;position:relative}
+.step:before{content:'';position:absolute;left:13px;top:36px;bottom:-10px;width:2px;background:#e1e7ee}
+.step:last-child:before{display:none}
+.step .dotc{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:900;flex:0 0 28px;background:#eef2f6;color:#8a97ab;transition:all .3s}
+.step.done .dotc{background:#22a06b;color:#fff}.step.done:before{background:#9fdcbf}
+.step.wait .dotc{background:#fff2d9;color:#a35c00;animation:pulse 1s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 6px #ffe7b8}}
+.step b{display:block;font-size:13px;color:#172b4d}.step small{display:block;font-size:11.5px;color:#6b778c;margin-top:2px}
+.guarantee{background:#eef7ff;border:1px solid #cfe6fb;border-radius:12px;padding:11px 12px;font-size:11.5px;color:#28476d;line-height:1.45;margin-top:10px}
+.guarantee strong{display:block;color:#092d72;font-size:12.5px;margin-bottom:2px}
+.autopay-offer{margin-top:12px;border-radius:16px;background:linear-gradient(135deg,#002970,#0a5bb5);color:#fff;padding:16px;animation:pop .45s ease both}
+.autopay-offer h3{margin:0 0 4px;font-size:16px}.autopay-offer p{margin:0 0 12px;font-size:12px;color:#d7e8ff;line-height:1.45}
+.autopay-offer .primary{background:#fff;color:#002970}
+.btn-light{border:0;background:none;color:#cfe6ff;font-weight:750;font-size:12px;margin-top:8px;width:100%}
+/* hub */
+.hb-hero{background:linear-gradient(140deg,#002970,#0b63c4);color:#fff;border-radius:20px;padding:18px 16px;display:flex;gap:16px;align-items:center;box-shadow:0 10px 26px #00297033}
+.hb-ring{width:86px;height:86px;border-radius:50%;display:grid;place-items:center;flex:0 0 86px;transition:background .6s}
+.hb-ring i{width:68px;height:68px;border-radius:50%;background:#0a3f8f;display:grid;place-items:center;font-style:normal;text-align:center}
+.hb-ring b{font-size:22px;line-height:1}.hb-ring small{font-size:10px;color:#bcd6ff;display:block}
+.hb-hero h2{margin:0;font-size:18px;letter-spacing:-.3px}.hb-hero p{margin:5px 0 0;font-size:12px;color:#cfe2ff;line-height:1.4}
+.insight{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid #e6edf4;border-radius:14px;padding:11px 12px;margin-top:10px;font-size:12px;color:#44546a;line-height:1.45}
+.insight .ii{width:26px;height:26px;border-radius:8px;background:#fff2d9;color:#a35c00;display:grid;place-items:center;font-weight:900;flex:0 0 26px}
+.grp-title{font-size:11px;font-weight:850;letter-spacing:.7px;color:#6b778c;margin:18px 4px 8px;text-transform:uppercase;display:flex;justify-content:space-between}
+.brow{display:flex;align-items:center;gap:11px;background:#fff;border:1px solid #e8eef4;border-radius:14px;padding:11px 12px;margin-bottom:8px}
+.brow .bm{flex:1;min-width:0}.brow .bn{font-size:13.5px;font-weight:750;color:#172b4d}.brow .bs{font-size:11.5px;color:#6b778c;margin-top:2px;line-height:1.35}
+.brow .ba{text-align:right;font-weight:850;font-size:13.5px;color:#172b4d}
+.mini{border:1px solid #00baf2;background:#fff;color:#0077bd;border-radius:9px;padding:7px 10px;font-size:11.5px;font-weight:850;margin-top:5px;white-space:nowrap}
+.mini.solid{background:#00baf2;color:#fff}.mini.warm{border-color:#e0a53b;background:#fff2db;color:#8a5200}
+.badge{display:inline-block;font-size:10px;font-weight:850;border-radius:6px;padding:2px 6px;margin-left:4px;vertical-align:1px}
+.badge.ap{background:#e6f7ee;color:#0d6b40}.badge.else{background:#fff2db;color:#8a5200}.badge.paid{background:#e6f7ee;color:#0d6b40}
+.brow.just{animation:flash 1.2s ease}@keyframes flash{0%{background:#e6f7ee}100%{background:#fff}}
+.trust-foot{font-size:11px;color:#6b778c;text-align:center;margin:16px 10px 4px;line-height:1.5}
+/* move autopay */
+.move-viz{display:flex;align-items:center;justify-content:center;gap:12px;margin:8px 0 14px}
+.app-chip{border-radius:14px;padding:10px 12px;font-size:12px;font-weight:850;text-align:center;min-width:96px}
+.app-chip small{display:block;font-weight:650;font-size:10.5px;margin-top:2px}
+.app-chip.from{background:#f2f4f7;color:#5e6c84}.app-chip.to{background:#e7f7ff;color:#0067a8;border:1.5px solid #00baf2}
+.move-arrow{font-size:22px;color:#00baf2;font-weight:900}
+.dep-note{background:#fff8ec;border:1px dashed #e0a53b;color:#8a5200;border-radius:10px;padding:9px 11px;font-size:11px;line-height:1.45;margin-top:10px}
+/* sheet + pin */
+.sheet-overlay{display:none;position:absolute;inset:0;z-index:75;background:#00142c80;align-items:flex-end}
+.sheet-overlay.open{display:flex}
+.sheet{background:#fff;width:100%;border-radius:22px 22px 0 0;padding:18px 18px 22px;max-height:88%;overflow:auto;animation:up .3s ease}
+@keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+.sheet h3{margin:0 0 4px;font-size:17px}.sheet .sub{font-size:12px;color:#6b778c;margin-bottom:12px;line-height:1.45}
+.cap-row{display:flex;align-items:center;justify-content:space-between;background:#f5f8fb;border-radius:12px;padding:10px 12px;margin:10px 0}
+.cap-row b{font-size:20px;color:#092d72}
+.stepper{display:flex;gap:6px}.stepper button{width:34px;height:34px;border-radius:10px;border:1px solid #cfdbe7;background:#fff;font-size:18px;font-weight:800;color:#0077bd}
+.tick-li{display:flex;gap:9px;font-size:12px;color:#44546a;padding:5px 0;line-height:1.4}.tick-li:before{content:'✓';color:#168653;font-weight:900}
+.pin-overlay{display:none;position:absolute;inset:0;z-index:90;background:#0b1730ee;color:#fff;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:30px}
+.pin-overlay.open{display:flex}
+.pin-bank{font-size:12px;color:#a9c1e3}.pin-amt{font-size:28px;font-weight:850}.pin-to{font-size:13px;color:#d3e2f7}
+.pin-dots{display:flex;gap:12px;margin:18px 0 6px}.pin-dots i{width:14px;height:14px;border-radius:50%;border:2px solid #7fa3d3;transition:background .15s}.pin-dots i.f{background:#fff;border-color:#fff}
+.pin-sim{font-size:10.5px;color:#7f97ba}
+/* demo + hooks */
+.demo-list button{display:flex;width:100%;gap:10px;align-items:center;border:0;background:#f6f8fb;border-radius:11px;padding:10px 11px;margin-bottom:6px;text-align:left;font-size:12.5px;color:#172b4d;font-weight:650}
+.demo-list button span{width:24px;height:24px;border-radius:7px;background:#e3f3ff;color:#0067a8;display:grid;place-items:center;font-size:11px;font-weight:900;flex:0 0 24px}
+.hook{display:none;position:absolute;z-index:5;font-size:9.5px;font-weight:900;letter-spacing:.6px;border-radius:6px;padding:3px 6px;color:#fff;pointer-events:none;box-shadow:0 2px 6px #0003}
+body.show-hooks .hook{display:inline-block}
+.hook.t{background:#e5484d}.hook.a{background:#0b74de}.hook.r{background:#7c3aed}.hook.i{background:#16a34a}
+.rel{position:relative}
+.done-hero{text-align:center;padding:26px 16px 8px}
+.done-badge{width:96px;height:96px;border-radius:50%;margin:0 auto 12px;background:conic-gradient(#22a06b 0 100%,#e6edf3 0);display:grid;place-items:center;animation:pop .5s ease}
+.done-badge i{width:76px;height:76px;border-radius:50%;background:#fff;display:grid;place-items:center;font-style:normal;font-size:34px;color:#168653;font-weight:900}
+.done-hero h2{margin:4px 0;font-size:21px;letter-spacing:-.3px}
+.confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.confetti i{position:absolute;top:-10px;width:7px;height:11px;border-radius:2px;animation:fall 1.8s ease-in forwards}
+@keyframes fall{to{transform:translateY(520px) rotate(320deg);opacity:0}}
+.switch-row small{display:block;font-size:11px;color:#6b778c;font-weight:500;margin-top:2px}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cat-grid button{border:1px solid #e4ebf2;background:#fff;border-radius:12px;padding:12px;text-align:left;font-size:12.5px;font-weight:750;color:#172b4d}
+.cat-grid button small{display:block;font-weight:500;color:#6b778c;font-size:11px;margin-top:3px}
+.cat-grid button.off{opacity:.55}
+
+@media(min-width:600px){.fab{position:absolute!important;left:auto!important;right:16px!important;bottom:26px!important;transform:none!important}}
+
+/* ===== Paytm Ghar v2 ===== */
+.tabs{display:flex;gap:6px;background:#eaf0f6;border-radius:12px;padding:4px;margin-bottom:12px}
+.tabs button{flex:1;border:0;background:none;border-radius:9px;padding:8px 4px;font-size:12px;font-weight:800;color:#5e6c84}
+.tabs button.on{background:#fff;color:#092d72;box-shadow:0 2px 6px #0029701a}
+.km-hero{background:#fff;border:1px solid #e3eaf2;border-radius:18px;padding:15px}
+.km-total{font-size:28px;font-weight:850;color:#092d72;letter-spacing:-.5px}
+.km-sub{font-size:11.5px;color:#6b778c;margin-top:2px}
+.km-bar{display:flex;height:12px;border-radius:7px;overflow:hidden;margin:12px 0 8px;background:#eef2f6}
+.km-bar i{display:block;height:100%}
+.km-leg{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:10.5px;color:#5e6c84;font-weight:700}
+.km-leg span:before{content:'';display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px;background:var(--c)}
+.km-plan{display:flex;gap:8px;margin-top:10px}
+.km-plan div{flex:1;background:#f5f8fb;border-radius:12px;padding:9px 10px}
+.km-plan b{display:block;font-size:15px;color:#172b4d}.km-plan small{font-size:10.5px;color:#6b778c}
+.km-cat{font-size:11px;font-weight:850;color:#6b778c;letter-spacing:.6px;text-transform:uppercase;margin:14px 4px 6px;display:flex;justify-content:space-between}
+.krow{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #e8eef4;border-radius:13px;padding:10px 11px;margin-bottom:7px}
+.krow .km{flex:1;min-width:0}.krow .kn{font-size:13px;font-weight:750;color:#172b4d}.krow .ks{font-size:11px;color:#6b778c;margin-top:2px}
+.krow .ka{font-weight:850;font-size:13px;color:#172b4d;text-align:right}
+.src{display:inline-block;font-size:9.5px;font-weight:850;border-radius:5px;padding:2px 6px;margin-top:3px}
+.src.p{background:#e6f7ee;color:#0d6b40}.src.e{background:#fff2db;color:#8a5200}.src.c{background:#eef1f5;color:#4a5668}.src.d{background:#e7f3ff;color:#0b5fae}.src.m{background:#f0e9ff;color:#5b21b6}
+.who{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:850;color:#fff;flex:0 0 26px;border:2px solid #fff;box-shadow:0 0 0 1px #dfe6ee}
+.who.rv{background:#2f6fd6}.who.sv{background:#c2410c}.who.av{background:#7c3aed}.who.pv{background:#64748b}.who.ai2{background:#0e9f6e}
+.members{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 2px}
+.mem{flex:0 0 74px;text-align:center;font-size:11px;font-weight:750;color:#344563}
+.mem .who{width:46px;height:46px;font-size:14px;margin:0 auto 5px;flex:none}
+.mem small{display:block;font-size:9.5px;color:#7a8797;font-weight:600}
+.mem.pending .who{opacity:.45}.mem .st{display:inline-block;margin-top:3px;font-size:9px;font-weight:850;border-radius:5px;padding:1px 5px}
+.st.j{background:#e6f7ee;color:#0d6b40}.st.i{background:#fff2db;color:#8a5200}.st.n{background:#eef1f5;color:#4a5668}
+.mem.add .who{background:#fff;color:#0077bd;border:1.5px dashed #00baf2;box-shadow:none}
+.assign{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #e8eef4;border-radius:13px;padding:10px 11px;margin-bottom:7px}
+.assign .am{flex:1}.assign button{border:1px solid #d5e2ee;background:#f7fafc;border-radius:20px;padding:3px 8px 3px 3px;display:flex;align-items:center;gap:6px;font-size:11px;font-weight:800;color:#344563}
+.assign button .who{width:22px;height:22px;font-size:9px;flex:0 0 22px;border:0;box-shadow:none}
+.chips{display:flex;gap:6px;margin:4px 0 8px;flex-wrap:wrap}
+.chips button{border:1px solid #d5e2ee;background:#fff;border-radius:20px;padding:5px 10px;font-size:11px;font-weight:800;color:#5e6c84}
+.chips button.on{background:#092d72;color:#fff;border-color:#092d72}
+.house2{background:linear-gradient(135deg,#fff7ed,#fff);border:1.5px solid #fed7aa;border-radius:16px;padding:13px;display:flex;gap:11px;align-items:center;margin-top:10px}
+.house2 .hi{width:40px;height:40px;border-radius:12px;background:#ffedd5;color:#c2410c;display:grid;place-items:center;font-size:18px}
+.note-soft{font-size:11px;color:#6b778c;line-height:1.45;margin:8px 4px}
+/* outside-screen control panel */
+.panel{width:330px;max-height:calc(100vh - 48px);overflow:auto;background:#fff;border-radius:22px;box-shadow:0 20px 50px #0b1a3a22;padding:20px 18px;font-family:Inter,sans-serif;color:#172b4d;align-self:center}
+.panel h1{font-size:18px;margin:0;letter-spacing:-.3px;color:#092d72}.panel .pk{font-size:10.5px;font-weight:850;letter-spacing:1.4px;color:#00a3d9}
+.panel .lead{font-size:12px;color:#5e6c84;margin:6px 0 14px;line-height:1.45}
+.pcard{display:flex;gap:11px;width:100%;text-align:left;border:1.5px solid #e2e8f0;background:#fff;border-radius:15px;padding:11px;margin-bottom:8px;cursor:pointer}
+.pcard.on{border-color:#00baf2;background:#f0faff;box-shadow:0 0 0 3px #00baf222}
+.pcard .who{width:42px;height:42px;font-size:13px;flex:0 0 42px}
+.pcard b{display:block;font-size:13.5px}.pcard small{display:block;font-size:11px;color:#6b778c;line-height:1.35;margin-top:2px}
+.pcard .ptag{display:inline-block;font-size:9.5px;font-weight:850;letter-spacing:.5px;border-radius:5px;padding:2px 6px;background:#e7f3ff;color:#0b5fae;margin-bottom:3px}
+.psec{font-size:10.5px;font-weight:850;letter-spacing:1px;color:#7a8797;margin:14px 2px 8px;text-transform:uppercase}
+.jstep{display:flex;gap:9px;align-items:flex-start;width:100%;border:0;background:none;text-align:left;padding:7px 6px;border-radius:10px;cursor:pointer;font-size:12.2px;color:#344563;line-height:1.35}
+.jstep:hover{background:#f4f8fc}.jstep.on{background:#e8f6fd;color:#092d72;font-weight:750}
+.jstep .jn{width:22px;height:22px;border-radius:7px;background:#eef2f6;color:#5e6c84;display:grid;place-items:center;font-size:10.5px;font-weight:900;flex:0 0 22px}
+.jstep.on .jn{background:#00baf2;color:#fff}
+.jstep .jh{display:inline-block;margin-left:4px;font-size:9px;font-weight:900;border-radius:4px;padding:1px 4px;color:#fff;vertical-align:1px}
+.jh.t{background:#e5484d}.jh.a{background:#0b74de}.jh.r{background:#7c3aed}.jh.i{background:#16a34a}
+.prow{display:flex;gap:8px;margin-top:12px}.prow button{flex:1;border:1px solid #d5e2ee;background:#fff;border-radius:10px;padding:8px;font-size:11.5px;font-weight:800;color:#0b5fae;cursor:pointer}
+.prow button.on{background:#092d72;color:#fff;border-color:#092d72}
+.pfoot{font-size:10.5px;color:#8a94a6;margin-top:12px;line-height:1.45}
+@media(min-width:1000px){body{gap:44px}.fab{display:none!important}}
+@media(max-width:999px){.panel{display:none}}
+
+#done-share{color:#0067a8!important;border:1.5px solid #00baf2!important;background:#fff!important}
+
+/* simplified panel */
+.panel{width:300px;padding:18px 16px}
+.pseg{display:flex;gap:6px;background:#eef3f8;border-radius:14px;padding:4px;margin:10px 0 8px}
+.pseg button{flex:1;display:flex;align-items:center;gap:8px;border:0;background:none;border-radius:11px;padding:7px 8px;cursor:pointer;text-align:left}
+.pseg button.on{background:#fff;box-shadow:0 2px 8px #0029701f}
+.pseg .who{width:30px;height:30px;font-size:11px;flex:0 0 30px}
+.pseg b{display:block;font-size:13px;color:#092d72}.pseg small{display:block;font-size:10.5px;color:#6b778c}
+.pwho{font-size:11.5px;color:#6b778c;margin:0 2px 12px;line-height:1.4}
+.pnow{background:linear-gradient(140deg,#002970,#0b63c4);color:#fff;border-radius:16px;padding:14px}
+.pnow-k{font-size:10px;font-weight:850;letter-spacing:1px;color:#9fd2ff;display:flex;align-items:center;gap:6px}
+.pnow-t{font-size:15px;font-weight:800;line-height:1.35;margin:6px 0 12px;letter-spacing:-.2px}
+.pnav{display:flex;gap:8px}.pnav button{flex:1;border:1px solid #ffffff55;background:none;color:#fff;border-radius:10px;padding:9px;font-size:12px;font-weight:800;cursor:pointer}
+.pnav button.next{background:#00baf2;border-color:#00baf2;color:#002970}.pnav button:disabled{opacity:.35;cursor:default}
+.pline{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.pdot{display:flex;align-items:center;gap:6px;border:1px solid #e1e8f0;background:#fff;border-radius:20px;padding:5px 10px 5px 8px;font-size:11.5px;font-weight:700;color:#5e6c84;cursor:pointer}
+.pdot:hover{border-color:#00baf2}.pdot.past{color:#8a97ab;background:#f7f9fb}.pdot.on{background:#092d72;border-color:#092d72;color:#fff}
+.hdot{display:inline-block;width:8px;height:8px;border-radius:50%;flex:0 0 8px}
+.hdot.t{background:#e5484d}.hdot.a{background:#0b74de}.hdot.r{background:#7c3aed}.hdot.i{background:#16a34a}
+.ptools{display:flex;gap:6px;margin-top:14px}.ptools button{flex:1;border:1px solid #d5e2ee;background:#fff;border-radius:10px;padding:7px 4px;font-size:11px;font-weight:800;color:#0b5fae;cursor:pointer}
+.ptools button.on{background:#e8f6fd;border-color:#00baf2}
+.pleg{display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:10px;font-size:10.5px;color:#7a8797}.pleg span{display:flex;align-items:center;gap:4px}
+
+/* real-Paytm details */
+.due-card{margin:0 12px 10px;background:#fff;border-radius:16px;padding:12px;display:flex;align-items:center;gap:10px;position:relative;border:1px solid #e6edf4}
+.due-card .op-logo{width:34px;height:34px;flex:0 0 34px;font-size:11px}
+.due-x{position:absolute;left:-6px;top:-6px;width:18px;height:18px;border-radius:50%;background:#5e6c84;color:#fff;font-size:12px;line-height:18px;text-align:center}
+.due-pay{border:0;background:#e7f3ff;color:#0b5fae;border-radius:8px;padding:6px 10px;font-size:11.5px;font-weight:800}
+.fee0{display:inline-block;background:#eef3f8;border-radius:6px;padding:2px 6px;font-size:10.5px;font-weight:800;color:#30507a}
+.bc-logo{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:11px;color:#092d72}
+.bc-logo b{font-weight:900;letter-spacing:-.4px}.bc-logo i{font-style:normal;font-size:8px;line-height:1.05;border-left:1px solid #cfd8e3;padding-left:5px;color:#5e6c84;font-weight:700}
+.ap-check{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid #e3eaf2;border-radius:14px;padding:12px;margin:0 0 12px;cursor:pointer}
+.ap-check input{width:18px;height:18px;margin-top:2px;accent-color:#00baf2}
+.ap-check b{display:block;font-size:13px;color:#172b4d}.ap-check small{display:block;font-size:11px;color:#6b778c;line-height:1.4;margin-top:2px}
+.gold-mission{display:flex;align-items:center;gap:10px;background:#fffbea;border:1px solid #f6e3a1;border-radius:14px;padding:10px 12px;margin-top:10px}
+.gm-coin{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#ffd55a,#e8a400);color:#fff;display:grid;place-items:center;font-size:15px;flex:0 0 30px}
+.gold-mission b{display:block;font-size:12.5px;color:#172b4d}.gold-mission small{display:block;font-size:10.5px;color:#7a6520;margin-top:1px}
+.gm-bar{height:5px;border-radius:3px;background:#f3e6b5;margin-top:6px;overflow:hidden}.gm-bar i{display:block;height:100%;background:#e8a400;width:33%}
+.gm-n{font-weight:900;color:#8a6400;font-size:13px}
+.mb-search{background:#fff;border:1px solid #dfe7ef;border-radius:12px;padding:10px 12px;margin:14px 0 2px;color:#8a97ab;font-size:12.5px}
+.mb-link{border:0;background:none;color:#0b74de;font-weight:800;font-size:12px;padding:4px 0;white-space:nowrap}
+.mb-link.warm{color:#b06000}
+
+/* ---- kharcha add-payment sheet ---- */
+.add-sheet-tabs{display:flex;gap:5px;margin-bottom:14px;flex-wrap:wrap}
+.add-sheet-tabs button{border:1.5px solid #e3eaf2;background:#f7fafc;border-radius:20px;padding:6px 12px;font-size:12px;font-weight:800;color:#5e6c84;cursor:pointer;display:flex;align-items:center;gap:5px}
+.add-sheet-tabs button.on{background:#092d72;border-color:#092d72;color:#fff}
+.add-sheet-tabs button .cat-icon{font-size:14px;line-height:1}
+.add-amt-row{display:flex;align-items:center;gap:10px;background:#f5f8fb;border-radius:14px;padding:12px 14px;margin:12px 0}
+.add-amt-row .rupee{font-size:22px;color:#5e6c84;font-weight:700}
+.add-amt-input{border:0;background:none;font-size:28px;font-weight:850;color:#092d72;width:100%;outline:none;letter-spacing:-.5px}
+.add-note-row{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.add-note-row label{font-size:11px;font-weight:800;color:#6b778c;text-transform:uppercase;letter-spacing:.6px}
+.add-note-input{border:1px solid #dfe7ef;border-radius:11px;padding:10px 12px;font-size:13px;font-weight:600;color:#172b4d;outline:none;width:100%;box-sizing:border-box;background:#fff;font-family:inherit}
+.add-note-input:focus{border-color:#00baf2;box-shadow:0 0 0 2px #00baf215}
+.add-repeat-row{display:flex;align-items:center;gap:10px;background:#f5f8fb;border-radius:12px;padding:11px 13px;margin:12px 0;cursor:pointer}
+.add-repeat-row input{accent-color:#00baf2;width:17px;height:17px}
+.add-repeat-row span{font-size:13px;font-weight:700;color:#344563}
+
+/* ---- kharcha row tag chip ---- */
+.ktag{display:inline-flex;align-items:center;gap:3px;font-size:9.5px;font-weight:850;border-radius:5px;padding:2px 6px;margin-top:3px;background:#f0e9ff;color:#5b21b6}
+.ktag .ti{font-size:11px}
+
+/* ---- custom payment entries in kharcha ---- */
+.krow.custom{border-left:3px solid #7c3aed}
+/* ---- kharcha action buttons (light surface) ---- */
+.kbtn{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;border-radius:12px;padding:12px 10px;font-size:13px;font-weight:800;cursor:pointer;background:#fff;border:1.5px solid #d7e3ef;color:#092d72;font-family:inherit;box-shadow:0 1px 2px #0b2a5c0d}
+.kbtn:active{transform:scale(.98)}
+.kbtn .kbtn-i{font-size:15px;line-height:1}
+.kbtn.add{background:#f5f0ff;border-color:#c4b0f5;color:#5b21b6}
+.kbtn.add .kbtn-i{font-size:17px;font-weight:900}
+.ktag{margin-top:4px}
+#km-note{margin-bottom:64px}
+/* ---- competitor-inspired additions (GPay / Airtel patterns, Paytm offerings) ---- */
+.rc-hist{background:#fff;border:1px solid #e4ebf2;border-radius:14px;padding:4px 12px}
+.rch{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f0f3f7}
+.rch:last-child{border-bottom:0}
+.rch-i{width:34px;height:34px;border-radius:50%;background:#e6f6fd;color:#0369a1;font-size:11px;font-weight:850;display:grid;place-items:center;flex:0 0 34px}
+.rch b{display:block;font-size:13px;color:#172b4d}
+.rch small{display:block;font-size:11px;color:#6b778c;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rch-btn{border:1.5px solid #00baf2;background:#fff;color:#0369a1;border-radius:18px;padding:6px 10px;font-size:11px;font-weight:850;white-space:nowrap}
+.rc-search{border:1px solid #dfe7ef;background:#fff;border-radius:12px;padding:10px 12px;font-size:12.5px;color:#8a97a8;margin-bottom:8px}
+.rc-tabs{margin:0 0 2px;flex-wrap:nowrap;overflow-x:auto}
+.rc-tabs button{white-space:nowrap}
+.rc-src{display:flex;flex-direction:column;gap:8px}
+.src-opt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;padding:11px 12px}
+.src-opt.on{border-color:#00baf2;background:#f2fbff}
+.src-opt.dis{opacity:.55}
+.src-opt b{display:block;font-size:13px;color:#172b4d}
+.src-opt b em{font-style:normal;font-size:10px;font-weight:850;color:#11734b;background:#e3f7ee;border-radius:6px;padding:2px 6px;margin-left:5px;vertical-align:1px}
+.src-opt small{display:block;font-size:11px;color:#6b778c;margin-top:2px}
+.src-opt i{width:18px;height:18px;border-radius:50%;border:2px solid #c3cfdc;flex:0 0 18px}
+.src-opt.on i{border:5px solid #00baf2}
+.so-i{width:32px;height:32px;border-radius:10px;background:#eef3f8;color:#30507a;font-weight:850;display:grid;place-items:center;flex:0 0 32px;font-size:13px}
+.so-i.lite{background:#092d72;color:#fff}
+.trust-strip{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.trust-strip span{font-size:10.5px;font-weight:800;color:#11734b;background:#eaf7f0;border-radius:8px;padding:5px 8px}
+.trust-strip span:before{content:'✓ '}
+.pin-overlay.lite .pin-dots{display:none}
+.pin-overlay.lite #pin-hint{font-weight:800;color:#bff0ff}
+.roundup{background:#fff;border:1px solid #f2dfa6;border-radius:14px;padding:10px 12px;margin-top:10px;gap:10px;border-bottom:1px solid #f2dfa6}
+.roundup b{font-size:13px;color:#172b4d}
+.ru-coin{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#ffd75e,#e0a400);color:#7a5200;display:grid;place-items:center;font-size:14px;flex:0 0 30px}
+.scratch{margin-top:12px}
+.sc-card{position:relative;height:132px;border-radius:16px;overflow:hidden;cursor:pointer;box-shadow:0 8px 22px #0b2a5c22}
+.sc-prize{position:absolute;inset:0;background:#fff;border:2px dashed #00baf2;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.sc-prize small{font-size:11px;color:#6b778c;font-weight:800;letter-spacing:.5px}
+.sc-prize b{font-size:28px;color:#092d72;font-weight:900;margin:2px 0}
+.sc-prize span{font-size:11.5px;color:#5e6c84}
+.sc-cover{position:absolute;inset:0;background:repeating-linear-gradient(135deg,#00baf2 0 14px,#13a7e0 14px 28px);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;transition:opacity .5s,transform .5s}
+.sc-cover b{font-size:18px;font-weight:900}
+.sc-cover span{font-size:12px;opacity:.95}
+.sc-cover em{font-style:normal;font-size:11px;font-weight:850;background:#002e6e;border-radius:14px;padding:5px 11px;margin-top:6px}
+.sc-cover.gone{opacity:0;transform:scale(1.08);pointer-events:none}
+.newbill{display:grid;grid-template-columns:repeat(4,1fr);gap:8px 6px;background:#fff;border:1px solid #e4ebf2;border-radius:14px;padding:12px 8px}
+.newbill button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:10.5px;font-weight:750;color:#344563;line-height:1.2;text-align:center}
+.newbill button span{width:38px;height:38px;border-radius:50%;background:#e9f7fd;color:#0877b8;display:grid;place-items:center;font-size:16px}
+.newbill button.off{opacity:.45}
+.km-gold{margin-top:10px;font-size:11.5px;font-weight:800;color:#7a5200;background:#fff7dc;border-radius:10px;padding:7px 10px}
+.km-gold span{color:#e0a400}
+.nick{display:flex;align-items:center;gap:10px;margin:2px 0 4px}
+.nick>span{font-size:11.5px;font-weight:800;color:#6b778c;white-space:nowrap}
+.nick .chips{margin:0}
+.sample-link{border:0;background:none;font-size:12px;color:#5e6c84;padding:4px 2px 12px;text-align:left}
+.sample-link b{color:#0877b8}
+.sample{border:1px solid #dfe7ef;border-radius:12px;padding:12px;margin:10px 0 14px;background:#fbfcfe}
+.sb-h{display:flex;justify-content:space-between;font-size:11px;color:#6b778c;margin-bottom:8px}
+.sb-h b{color:#172b4d;letter-spacing:.6px}
+.sb-r{display:flex;justify-content:space-between;font-size:12px;padding:6px 6px;border-radius:8px;color:#5e6c84}
+.sb-r b{color:#172b4d}
+.sb-r.hl{background:#fff4c2;outline:2px solid #f5b800}
+.hi-compare{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #e4ebf2;border-radius:14px;padding:12px;margin-bottom:10px}
+.hi-compare>div{flex:1;border-radius:10px;padding:8px 10px;background:#f4f6f9}
+.hi-compare>div.now{background:#e6f6fd}
+.hi-compare small{display:block;font-size:9.5px;font-weight:850;letter-spacing:.6px;color:#6b778c}
+.hi-compare b{display:block;font-size:17px;color:#092d72;margin-top:2px}
+.hi-compare span{font-size:11.5px;color:#5e6c84}
+.hi-compare i{font-style:normal;color:#00baf2;font-weight:900}
+.hrow{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid #e9eef4;border-radius:14px;padding:11px 12px;margin-bottom:8px}
+.hrow .op-logo{width:34px;height:34px;flex:0 0 34px;font-size:10px}
+.hm{flex:1;min-width:0}
+.hm small{display:block;font-size:9.5px;font-weight:850;letter-spacing:.6px;color:#6b778c}
+.hm b{display:block;font-size:13px;color:#172b4d;margin-top:2px}
+.hm span{display:block;font-size:11px;color:#6b778c;margin-top:2px}
+.hm em{display:inline-block;font-style:normal;font-size:10px;font-weight:850;color:#11734b;background:#e3f7ee;border-radius:6px;padding:2px 7px;margin-top:5px}
+.hm em.act{color:#0369a1;background:#e6f6fd}
+.ha{font-size:13.5px;font-weight:850;color:#172b4d;white-space:nowrap}
+
+.km-month{display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid #e3eaf2;border-radius:14px;padding:7px 8px}
+.km-month b{font-size:14px;color:#092d72}
+.km-month button{width:30px;height:30px;border-radius:50%;border:none;background:#eef4fa;color:#092d72;font-size:16px;font-weight:800}
+.km-month button:disabled{opacity:.3}
+.km-trio{display:grid;grid-template-columns:repeat(3,1fr);background:#fff;border:1px solid #e3eaf2;border-radius:14px;padding:10px 4px;margin-top:10px}
+.km-trio div{text-align:center;border-right:1px solid #eef2f6}.km-trio div:last-child{border:none}
+.km-trio small{display:block;font-size:10.5px;color:#6b778c;font-weight:650}
+.km-trio b{display:block;font-size:16px;font-weight:850;color:#092d72;margin-top:2px}
+.km-trio b.p{color:#0a7bd6}.km-trio b.o{color:#d9480f}
+.km-ai{background:linear-gradient(180deg,#faf8ff,#fff);border:1px solid #e4dcfb;border-radius:14px;padding:11px 13px;margin-top:10px}
+.km-ai-h{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.km-ai-h span{background:#efe9ff;color:#6d28d9;font-size:11px;font-weight:800;padding:3px 9px;border-radius:10px}
+.km-ai-h small{font-size:10.5px;color:#6b778c}
+.km-ai ul{margin:0;padding-left:17px;display:flex;flex-direction:column;gap:5px}
+.km-ai li{font-size:12px;line-height:1.45;color:#283a55}
+.km-donut-card{background:#fff;border:1px solid #e3eaf2;border-radius:14px;padding:12px 13px;margin:10px 0}
+.km-dw{display:flex;align-items:center;gap:14px;margin-top:8px}
+.km-dl{flex:1;display:flex;flex-direction:column;gap:6px}
+.km-dl div{display:flex;align-items:center;gap:7px;font-size:12px;color:#283a55;font-weight:650}
+.km-dl i{width:9px;height:9px;border-radius:50%;flex:0 0 9px}
+.km-dl span{margin-left:auto;color:#6b778c;font-weight:600}
+
+.hb-strip{display:flex;align-items:center;gap:10px;width:100%;margin-top:12px;padding:10px 4px 2px;border:none;border-top:1px solid #edf1f6;background:none;text-align:left}
+.hb-strip .hb-mini-ring{width:34px;height:34px;flex:0 0 34px}
+.hb-strip .hb-home-copy{flex:1;min-width:0}
+.hb-strip strong{display:block;font-size:13px;color:#092d72}
+.hb-strip small{display:block;font-size:11px;color:#6b778c;margin-top:1px}
+.hb-strip .hb-home-cta{font-size:20px;color:#00baf2;font-weight:700}
+</style>
+<style id="embed-mode">.fab,.panel{display:none!important}*{scrollbar-width:none}*::-webkit-scrollbar{display:none}</style></head>
+<body>
+<div class="app-shell" id="app">
+<div class="status-bar" aria-hidden="true"><span>9:41</span><span class="sb-icons"><svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1" fill="#111"/><rect x="5" y="5.5" width="3" height="6.5" rx="1" fill="#111"/><rect x="10" y="3" width="3" height="9" rx="1" fill="#111"/><rect x="15" y="0" width="3" height="12" rx="1" fill="#111"/></svg><svg width="16" height="12" viewBox="0 0 16 12" fill="#111"><path d="M8 2.2c2.3 0 4.4.9 6 2.4l1.2-1.3A10.2 10.2 0 0 0 8 .4 10.2 10.2 0 0 0 .8 3.3L2 4.6a8.4 8.4 0 0 1 6-2.4z"/><path d="M8 5.6c1.4 0 2.6.5 3.6 1.4l1.2-1.3A7 7 0 0 0 8 3.8a7 7 0 0 0-4.8 1.9L4.4 7A5.2 5.2 0 0 1 8 5.6z"/><circle cx="8" cy="10" r="1.8"/></svg><svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="#111" opacity=".45"/><rect x="2" y="2" width="18" height="9" rx="2" fill="#111"/><rect x="24.5" y="4.5" width="2" height="4" rx="1" fill="#111" opacity=".45"/></svg></span></div>
+  <div class="viewport" id="viewport">
+  <header class="topbar">
+    <button class="avatar" id="avatar" data-go="menu" aria-label="Open profile menu">AI</button>
+    <button class="brand" data-go="home" aria-label="Paytm home">pay<span>tm</span></button>
+    <button class="icon-btn" aria-label="Search" data-action="noop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 4.2 4.2"/></svg></button>
+    <button class="icon-btn" aria-label="Notifications" data-action="push-24h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg><i class="dot"></i></button>
+  </header>
+
+  <main id="home" class="screen active">
+    <div class="home-quick">
+      <button class="quick" data-action="noop"><span class="qicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4"/><path d="M8 8h3v3H8zM14 8h2M14 11h3M8 14h3v3H8zM14 14h3v3h-3z"/></svg></span><span>Scan<br>&amp; Pay</span></button>
+      <button class="quick" data-action="noop"><span class="qicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="5" y="5" width="10" height="15" rx="1.5"/><path d="M8 8h4M8 16h4M17 8l3-3m0 0v5m0-5h-5M16 14h5"/></svg></span><span>To Mobile /<br>Contact</span></button>
+      <button class="quick" data-action="noop"><span class="qicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 9l10-6 10 6M4 10h16M5 10v9M9 10v9M15 10v9M19 10v9M3 20h18"/></svg></span><span>To Bank &amp;<br>Self A/c</span></button>
+      <button class="quick" data-action="noop"><span class="qicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="5" y="3" width="14" height="18" rx="1"/><path d="M8 7h8M8 11h3M8 15h8M15 10v3"/></svg></span><span>Balance &amp;<br>History</span></button>
+    </div>
+    <section class="section recharge-compact">
+      <div class="section-head"><div class="section-title">Recharge &amp; Bills</div><button class="viewall" data-go="add">View All →</button></div>
+      <div class="bills-grid">
+        <button data-go="recharge"><span class="bi"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M11 18.5h2"/></svg></span>Mobile<br>Recharge</button>
+        <button data-action="open-cross"><span class="bi"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M13 2 5 13h6l-1 9 8-11h-6z"/></svg></span>Electricity</button>
+        <button data-go="add"><span class="bi"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r="1"/></svg></span>Broadband</button>
+        <button data-go="add"><span class="bi"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 3h6v3H9z"/><rect x="6" y="6" width="12" height="15" rx="4"/><path d="M6 12h12"/></svg></span>Gas &amp;<br>Cylinder</button>
+      </div>
+      <button class="hb-strip rel" data-go="hub" aria-label="Open Paytm Ghar"><span class="hook t" style="top:-9px;right:30px">TRIGGER</span><div class="hb-mini-ring" id="home-ring"><i id="home-ring-n">1/4</i></div><div class="hb-home-copy"><strong>Paytm Ghar · your home bills</strong><small id="home-ring-msg"></small></div><span class="hb-home-cta">›</span><span id="home-icons" hidden></span></button>
+    </section>
+    <div class="due-card" id="due-card"><span class="due-x">×</span><div class="op-logo" id="dc-logo">BE</div><div style="flex:1"><div class="card-title" id="dc-t">Electricity · BESCOM</div><div class="card-sub" id="dc-s">₹1,280 due on 26 Nov</div></div><button class="due-pay" data-action="open-cross">Pay Bill</button></div>
+    <div class="home-offer-strip"><span class="gift">🎁</span><div><strong>Exclusive offer for You!</strong><small>Claim your exclusive reward</small></div><span class="arr">›</span></div>
+    <div class="home-offer-grid">
+      <button class="offer-tile tall" data-action="noop"><span class="offer-ico">▤</span><span>Sale Is On!<small>Activate Postpaid &amp; Get up to ₹60,000 to Spend</small></span></button>
+      <button class="offer-tile" data-action="noop"><span class="offer-ico">✈</span><span>15% off* on Flights</span></button>
+      <button class="offer-tile" data-action="noop"><span class="offer-ico">◇</span><span>Save in Silver<small>Flat 3% Off</small></span></button>
+    </div>
+  </main>
+
+  <main id="menu" class="screen">
+    <div class="page-head"><button class="back" data-go="home">‹</button><div><div class="page-title">Profile &amp; Settings</div><div class="eyebrow">Manage your Paytm account</div></div></div>
+    <div class="menu-profile"><div class="profile-big" id="menu-init">AI</div><div><div class="profile-name" id="menu-name"></div><div class="profile-sub" id="menu-sub"></div></div></div>
+    <div class="menu-list">
+      <button class="menu-item" data-go="hub"><span class="menu-icon">⌂</span><span class="menu-label">Paytm Ghar<div class="menu-desc">Home bills, kharcha and family in one place</div></span><span class="chevron">›</span></button>
+      <button class="menu-item" data-go="kharcha"><span class="menu-icon">₹</span><span class="menu-label">Ghar kharcha<div class="menu-desc">Monthly expense manager, filled in for you</div></span><span class="chevron">›</span></button>
+      <button class="menu-item" data-go="reminders"><span class="menu-icon">◷</span><span class="menu-label">Reminders &amp; AutoPay<div class="menu-desc">Each bill on its own clock</div></span><span class="chevron">›</span></button>
+      <button class="menu-item" data-action="consent-again"><span class="menu-icon">✉</span><span class="menu-label">Bill detection<div class="menu-desc">What Paytm reads, and what it never reads</div></span><span class="chevron">›</span></button>
+    </div>
+  </main>
+
+  <main id="recharge" class="screen">
+    <div class="page-head"><button class="back" data-go="home">‹</button><div><div class="page-title">Mobile Recharge</div><div class="eyebrow"><span class="fee0">₹0 Platform Fees</span></div></div></div>
+    <div class="content">
+      <div class="card num-card"><div class="op-logo" id="rc-logo">ai</div><div style="flex:1"><div class="card-title" id="rc-num"></div><div class="card-sub" id="rc-circle"></div></div><span class="tag">Expires today</span></div>
+      <div class="grp-title"><span>Your recharges</span><span>Repeat in one tap</span></div>
+      <div class="rc-hist" id="rc-hist"></div>
+      <div class="grp-title"><span>Plans</span></div>
+      <div class="rc-search">⌕ <span>Search a plan or enter amount</span></div>
+      <div class="chips rc-tabs" id="rc-tabs"></div>
+      <div id="rc-plans"></div>
+      <div class="src-note">Plan prices are illustrative.</div>
+      <div class="grp-title"><span>Pay from</span></div>
+      <div class="rc-src" id="rc-src"></div>
+      <div class="trust-strip" id="rc-trust"><span>₹0 platform fee</span><span>Instant refund if it fails</span><span>Plan checked with the operator</span></div>
+      <div class="rel"><span class="hook a" style="top:4px;right:8px">ACTION</span><button class="primary full" style="margin-top:12px" data-action="pay-recharge" id="rc-pay">Pay</button></div>
+    </div>
+  </main>
+
+  <main id="rsuccess" class="screen">
+    <div class="rs-hero"><div class="rs-tick">✓</div><h2>Recharge successful</h2><div class="card-sub" id="rs-sub"></div><div class="amt" id="rs-amt"></div></div>
+    <div class="xsell">
+      <span class="hook t" style="top:-9px;left:14px">TRIGGER</span>
+      <div class="xsell-k">BEFORE YOU GO · FOUND IN YOUR BILL SMS</div>
+      <h3>Your electricity bill is due in 4 days</h3>
+      <p id="xs-p"></p>
+      <div class="xsell-bill"><div class="op-logo" id="xs-logo"></div><div><div class="card-title" id="xs-biller"></div><div class="card-sub" id="xs-acct"></div></div><div class="amt" id="xs-amt"></div></div>
+      <div class="rel"><span class="hook a" style="top:-8px;right:8px">ACTION</span><button class="primary full" data-action="open-cross" id="xs-pay">Pay now</button></div>
+      <button class="ghost full" data-action="remind">Remind me on 24 Nov</button>
+      <div class="src-note">Simulated SMS · amounts illustrative · no real data read</div>
+    </div>
+    <div class="content"><button class="ghost full" data-go="home">Back to home</button></div>
+  </main>
+
+  <main id="bill" class="screen">
+    <div class="page-head"><button class="back" data-go="hub">‹</button><div><div class="page-title" id="bill-title">Bill</div><div class="eyebrow">Found in your SMS · nothing to type</div></div><span class="bc-logo"><b>paytm</b><i>Bharat<br>Connect</i></span></div>
+    <div class="content">
+      <div class="card">
+        <div class="bill-head"><div class="op-logo" id="bill-logo"></div><div style="flex:1"><div class="card-title" id="bill-biller"></div><div class="card-sub" id="bill-acct"></div></div><span class="found-chip">✓ Found in SMS</span></div>
+        <div class="metric-value" style="margin:16px 0 6px" id="bill-amt"></div>
+        <div id="bill-kv"></div>
+        <div class="bc-mark"><span>BHARAT CONNECT</span> Bill fetched from the biller · paid bank-to-bank on UPI</div>
+      </div>
+      <div class="card">
+        <div class="kv"><span>Pay from</span><b id="bill-bank">UPI</b></div>
+        <div class="kv"><span>Goes into Ghar kharcha as</span><b id="bill-cat">Utilities</b></div>
+        <div class="kv"><span>Platform fees</span><b class="fee-free">₹0</b></div>
+      </div>
+      <label class="switch-row roundup rel" id="ru-row"><span class="hook i" style="top:-9px;right:54px">INVESTMENT</span><span class="ru-coin">◉</span><span style="flex:1"><b id="ru-t">Round up</b><small id="ru-s">Save the change in Paytm Gold</small></span><input type="checkbox" id="ru-check"><i></i></label>
+      <label class="ap-check" id="ap-check-row"><input type="checkbox" id="ap-check"><span><b>Enable AutoPay</b><small>Paytm will pay this bill automatically each month, up to a limit you set. Cancel any time.</small></span></label>
+      <div class="rel"><span class="hook a" style="top:4px;right:8px">ACTION</span><button class="primary full" data-action="pay-bill" id="bill-pay">Pay</button></div>
+      <button class="ghost full" data-go="hub">Not now</button>
+    </div>
+  </main>
+
+  <main id="status" class="screen">
+    <div class="page-head"><button class="back" data-go="hub">‹</button><div><div class="page-title">Payment status</div><div class="eyebrow">Confirmed by the biller · added to Ghar kharcha</div></div></div>
+    <div class="content">
+      <div class="card">
+        <div class="card-title" id="st-title"></div>
+        <div class="steps">
+          <div class="step" id="s1"><div class="dotc">1</div><div><b id="s1-t">Paid</b><small>UPI ref 6347 •• 9021 · just now</small></div></div>
+          <div class="step" id="s2"><div class="dotc">2</div><div><b>Sent via Bharat Connect</b><small>Bharat Connect ref BC26N ••• 4471</small></div></div>
+          <div class="step" id="s3"><div class="dotc">3</div><div><b id="s3-t">Confirmed by the biller</b><small id="s3-s">Receipt saved in Paytm Ghar</small></div></div>
+        </div>
+      </div>
+      <div class="scratch rel" id="scratch" hidden><span class="hook r" style="top:-9px;left:14px">REWARD · HUNT</span>
+        <div class="sc-card" data-action="scratch" id="sc-card"><div class="sc-prize"><small>You won</small><b>₹25 cashback</b><span>Goes to your bank account in 24 hours</span></div><div class="sc-cover" id="sc-cover"><b>Scratch card</b><span>Your first home bill on Paytm</span><em>Tap to scratch</em></div></div>
+        <div class="src-note" style="text-align:center">One welcome reward per bill you move to Paytm · value illustrative</div>
+      </div>
+      <div class="autopay-offer rel" id="ap-offer" hidden>
+        <span class="hook i" style="top:-9px;right:14px">INVESTMENT</span>
+        <h3>Never chase this bill again</h3>
+        <p id="ap-p">Pay it automatically each month. You set the upper limit, we notify you 24 hours before every debit, and you can skip any month.</p>
+        <button class="primary full" data-action="open-autopay">Set up AutoPay</button>
+        <button class="btn-light" data-go="hub">Maybe later · go to Paytm Ghar</button>
+      </div>
+    </div>
+  </main>
+
+  <main id="hub" class="screen">
+    <div class="page-head"><button class="back" data-go="home">‹</button><div><div class="page-title">Paytm Ghar</div><div class="eyebrow" id="hub-eyebrow">November</div></div><button class="tour-help" data-go="reminders">◷ Reminders</button></div>
+    <div class="content">
+      <div class="tabs" data-tabs></div>
+      <div class="hb-hero rel"><span class="hook r" style="top:-8px;left:14px">REWARD · SELF</span><div class="hb-ring" id="hub-ring"><i><span><b id="hub-n">1/4</b><small>bills on Paytm</small></span></i></div><div><h2 id="hub-h"></h2><p id="hub-p"></p></div></div>
+      <div class="metrics" style="margin-top:12px">
+        <button class="metric breakdown-trigger" data-go="kharcha"><div class="metric-label">Monthly kharcha</div><div class="metric-value" id="m-total">₹0</div><div class="metric-foot">See where it goes ↗</div></button>
+        <button class="metric breakdown-trigger" data-go="kharcha"><div class="metric-label">Still due this month</div><div class="metric-value" id="m-due">₹0</div><div class="metric-foot" id="m-due-n">Tap to plan ↗</div></button>
+      </div>
+      <div class="insight rel"><span class="hook r" style="top:-8px;right:10px">REWARD · HUNT</span><span class="ii">!</span><span id="hub-insight-t"></span></div>
+      <button class="expense-home-banner" data-go="kharcha" aria-label="Open Ghar kharcha"><span class="expense-banner-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/></svg></span><span class="payday-banner-copy"><strong>Ghar kharcha</strong><small>Your monthly expense manager, filled in for you</small></span><span class="expense-banner-cta">›</span></button>
+      <div class="gold-mission rel"><span class="gm-coin">◉</span><div style="flex:1"><b>Pay 3 different categories every month</b><small id="gm-s">Get 10,000 Gold Coins · existing Paytm reward</small><div class="gm-bar"><i id="gm-fill"></i></div></div><span class="gm-n" id="gm-n">1/3</span></div>
+      <div class="mb-search">⌕ <span>Search for bills</span></div>
+      <div id="hub-groups"></div>
+      <div id="hub-house2"></div>
+      <div class="grp-title"><span>Pay a new bill</span><span>Bharat Connect</span></div>
+      <div class="newbill" id="newbill"></div>
+      <div class="trust-foot">Every bill is paid bank-to-bank on UPI through Bharat Connect, with your UPI PIN.</div>
+    </div>
+  </main>
+
+  <main id="kharcha" class="screen">
+    <div class="page-head"><button class="back" data-go="hub">‹</button><div><div class="page-title">Ghar kharcha</div><div class="eyebrow" id="km-eyebrow">November · filled in for you</div></div></div>
+    <div class="content">
+      <div class="tabs" data-tabs></div>
+      <div class="km-month"><button data-action="km-prev" aria-label="Previous month">‹</button><b id="km-mon">November 2026</b><button data-action="km-next" aria-label="Next month">›</button></div>
+      <div class="km-trio"><div><small>Home kharcha</small><b id="km-total"></b></div><div><small>On Paytm</small><b class="p" id="km-pt"></b></div><div><small>Elsewhere / due</small><b class="o" id="km-el"></b></div></div>
+      <div class="km-ai"><div class="km-ai-h"><span>✦ Ghar summary</span><small>From your bill and payment SMS</small></div><ul id="km-ai"></ul></div>
+      <div class="km-donut-card"><div class="card-title" style="font-size:14px">Where your home money went</div><div class="card-sub" id="km-dsub">By category</div>
+        <div class="km-dw"><div id="km-donut"></div><div class="km-dl" id="km-dl"></div></div></div>
+      <div id="km-sub" hidden></div><div id="km-bar" hidden></div><div id="km-due" hidden></div><div id="km-vs" hidden></div><div class="km-gold" id="km-gold" hidden></div>
+      <div id="km-filter"></div>
+      <div id="km-list"></div>
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <button class="kbtn" data-action="add-cash"><span class="kbtn-i">💵</span>Cash payment</button>
+        <button class="kbtn add" data-action="open-add-payment"><span class="kbtn-i">＋</span>Add payment</button>
+      </div>
+      <div class="note-soft" id="km-note">Bills paid on Paytm and recurring payments found in your SMS fill this in automatically. Cash and custom payments take one tap.</div>
+    </div>
+  </main>
+
+  <main id="family" class="screen">
+    <div class="page-head"><button class="back" data-go="hub">‹</button><div><div class="page-title">Family</div><div class="eyebrow">One household · many payers · no settling up</div></div></div>
+    <div class="content">
+      <div class="tabs" data-tabs></div>
+      <div class="card rel"><span class="hook i" style="top:10px;right:12px">INVESTMENT</span>
+        <div class="card-title">Verma household</div><div class="card-sub">You manage it. Others can join — or stay as a name. Aman joins through Pocket Money (UPI Circle).</div>
+        <div class="members" id="members" style="margin-top:12px"></div>
+      </div>
+      <div class="grp-title"><span>Who handles what</span><span>tap to change</span></div>
+      <div id="assign-list"></div>
+      <div class="note-soft">Nobody owes anybody. Ghar shows who handles each bill so nothing is paid twice or missed.</div>
+      <div id="fam-house2"></div>
+    </div>
+  </main>
+
+  <main id="parents" class="screen">
+    <div class="page-head"><button class="back" data-go="family">‹</button><div><div class="page-title">Papa's home · Kanpur</div><div class="eyebrow">A second household you look after</div></div></div>
+    <div class="content">
+      <div class="card">
+        <div class="bill-head"><div class="op-logo mv">KE</div><div style="flex:1"><div class="card-title">KESCo Electricity · Kanpur</div><div class="card-sub">Consumer no. ••••6650 · S. N. Verma</div></div><span class="found-chip">Added by you</span></div>
+        <div class="metric-value" style="margin:16px 0 6px">₹1,640</div>
+        <div class="kv"><span>Due date</span><b>29 Nov 2026</b></div>
+        <div class="kv"><span>Receipt goes to</span><b>Papa on WhatsApp</b></div>
+        <div class="kv"><span>Counted in</span><b>Papa's home, not yours</b></div>
+      </div>
+      <button class="primary full" data-action="pay-parents" id="par-pay">Pay for Papa · ₹1,640</button>
+      <div class="note-soft">Papa doesn't need Paytm. He gets the receipt; you see his bills next to yours.</div>
+    </div>
+  </main>
+
+  <main id="move" class="screen">
+    <div class="page-head"><button class="back" data-go="hub">‹</button><div><div class="page-title">Move AutoPay to Paytm</div><div class="eyebrow">Same bill, same limit, one UPI PIN</div></div></div>
+    <div class="content">
+      <div class="card">
+        <div class="bill-head"><div class="op-logo" id="mv-logo"></div><div style="flex:1"><div class="card-title" id="mv-biller"></div><div class="card-sub" id="mv-sub"></div></div></div>
+        <div class="move-viz"><div class="app-chip from">Google Pay<small>AutoPay today</small></div><span class="move-arrow">→</span><div class="app-chip to">Paytm<small>after the move</small></div></div>
+        <div class="tick-li" id="mv-t1"></div>
+        <div class="tick-li">The Google Pay mandate closes in the same step — no double debit</div>
+        <div class="tick-li">24-hour notice before every debit; skip or stop any time</div>
+        <div class="tick-li">Shows up in Ghar kharcha automatically</div>
+        <div class="dep-note">Depends on NPCI's UPI AutoPay interoperability (moving mandates between apps), rolling out from July 2026. Simulated here.</div>
+      </div>
+      <div class="rel"><span class="hook i" style="top:4px;right:8px">INVESTMENT</span><button class="primary full" data-action="do-move">Move with UPI PIN</button></div>
+      <button class="ghost full" data-go="hub">Keep it on Google Pay</button>
+    </div>
+  </main>
+
+  <main id="lpg" class="screen">
+    <div class="page-head"><button class="back" data-go="hub">‹</button><div><div class="page-title">Book cylinder</div><div class="eyebrow">Saved once, booked in one tap</div></div></div>
+    <div class="content">
+      <div class="card">
+        <div class="bill-head"><div class="op-logo in">IN</div><div style="flex:1"><div class="card-title">Indane Gas</div><div class="card-sub">LPG ID ••••••••••••7716 · saved</div></div><span class="found-chip">✓ No ID hunt</span></div>
+        <div class="kv" style="margin-top:12px"><span>Last cylinder booked</span><b>12 Oct · 41 days ago</b></div>
+        <div class="kv"><span>Your usual gap</span><b>about 45 days</b></div>
+        <div class="kv"><span>25-day minimum gap</span><b class="fee-free">✓ You can book</b></div>
+        <div class="kv"><span>Refill price</span><b>₹890 (illustrative)</b></div>
+        <div class="kv"><span>Handled by</span><b id="lpg-who">Sunita</b></div>
+      </div>
+      <button class="primary full" data-action="pay-lpg">Book &amp; pay ₹890</button>
+      <div class="src-note" style="text-align:center">We remind you from your own booking gap, not a fixed date.</div>
+    </div>
+  </main>
+
+  <main id="done" class="screen rel">
+    <div class="confetti" id="confetti"></div>
+    <div class="done-hero"><div class="done-badge"><i>✓</i></div><h2 id="done-h">All home bills handled</h2><div class="card-sub" id="done-sub"></div></div>
+    <div class="content">
+      <div class="card rel"><span class="hook r" style="top:10px;right:12px">REWARD · HUNT</span><div id="done-kv"></div></div>
+      <div class="rel"><span class="hook r" style="top:4px;right:8px">REWARD · TRIBE</span><button class="secondary full" data-action="share" id="done-share">Share the month's receipts</button></div>
+      <button class="primary full" data-go="kharcha">See November's kharcha</button>
+      <div class="src-note" style="text-align:center">No streaks to lose. Just nothing left to remember.</div>
+    </div>
+  </main>
+
+  <main id="reminders" class="screen">
+    <div class="page-head"><button class="back" data-go="hub">‹</button><div><div class="page-title">Reminders &amp; AutoPay</div><div class="eyebrow">Each bill reminds you on its own clock</div></div></div>
+    <div class="content"><div class="form-card" id="rem-list"></div>
+    <div class="notice"><strong>You stay in control</strong>Every reminder can be switched off per bill. AutoPay always sends a notice 24 hours before a debit, as RBI requires.</div></div>
+  </main>
+
+  <main id="add" class="screen">
+    <div class="page-head"><button class="back" data-go="hub">‹</button><div><div class="page-title">Add a bill</div><div class="eyebrow">Search your biller · we fetch the amount</div></div></div>
+    <div class="content">
+      <label class="field"><span>Search biller</span><input placeholder="e.g. BESCOM, ACT, Indane"></label>
+      <div class="nick"><span>Save it as</span><div class="chips" id="nick-chips"><button class="on" data-nick="Home">Home</button><button data-nick="Flat">Flat</button><button data-nick="Parents">Parents</button><button data-nick="Shop">Shop</button></div></div>
+      <button class="sample-link" data-action="sample-bill">Where is my consumer number? <b>See a sample bill ›</b></button>
+      <div class="cat-grid">
+        <button data-action="open-cross">Electricity<small>97 billers on Bharat Connect</small></button>
+        <button data-action="open-move">Broadband<small>390 billers</small></button>
+        <button data-action="open-third">Gas / DTH<small>Piped gas, LPG, DTH</small></button>
+        <button data-action="add-cash">Rent / house help<small>Track it in Ghar kharcha</small></button>
+        <button class="off" data-action="water">Water<small>Your city's board isn't on Bharat Connect yet</small></button>
+        <button data-action="noop">Society maintenance<small>Coming later</small></button>
+      </div>
+    </div>
+  </main>
+
+  <main id="history" class="screen">
+    <div class="page-head"><button class="back" data-go="hub">‹</button><div><div class="page-title">Payment history</div><div class="eyebrow" id="hi-eyebrow">Recharges and home bills, by month</div></div><button class="tour-help" data-action="statement">⤓ Statement</button></div>
+    <div class="content">
+      <div class="tabs" data-tabs></div>
+      <div class="hi-compare" id="hi-compare"></div>
+      <div class="chips" id="hi-filter"></div>
+      <div id="hi-list"></div>
+      <div class="trust-foot">Every receipt is saved here and in your Paytm UPI statement.</div>
+    </div>
+  </main>
+
+  </div>
+
+  <div class="home-indicator" aria-hidden="true"></div>
+
+  <div class="consent-overlay open" id="consent-overlay">
+    <div class="consent-sheet" id="consent-ask">
+      <div class="consent-icon">✉</div>
+      <h2>Let Paytm Ghar find your home bills</h2>
+      <p>We read bill and payment messages from billers and your bank — so your bills and monthly kharcha fill themselves in.</p>
+      <div class="consent-row"><span>✓</span><div><strong>Reads</strong><small>Bill, due-date and payment SMS</small></div></div>
+      <div class="consent-row"><span>✕</span><div><strong>Never reads</strong><small>OTPs, personal chats, account balances</small></div></div>
+      <div class="consent-row"><span>↺</span><div><strong>Switch off any time</strong><small>Profile › Bill detection</small></div></div>
+      <div class="consent-note">Prototype · no real SMS is read.</div>
+      <button class="primary full" data-action="consent-allow">Allow</button>
+      <button class="ghost full" data-action="consent-skip">Not now · add bills myself</button>
+    </div>
+    <div class="consent-sheet" id="consent-done" hidden>
+      <div class="consent-check">✓</div>
+      <h2 id="found-h">Found</h2>
+      <div id="found-list"></div>
+      <button class="primary full" data-action="consent-continue">Continue</button>
+    </div>
+  </div>
+
+  <div class="sheet-overlay" id="sheet"><div class="sheet" id="sheet-body"></div></div>
+  <div class="pin-overlay" id="pin"><div class="pin-bank" id="pin-bank">UPI</div><div class="pin-to" id="pin-to">Paying</div><div class="pin-amt" id="pin-amt">₹0</div><div class="pin-dots" id="pin-dots"><i></i><i></i><i></i><i></i><i></i><i></i></div><div id="pin-hint">Enter UPI PIN</div><div class="pin-sim">Simulated · no money moves</div></div>
+  <div class="push-note" id="push-note"><div class="push-app"><b>paytm</b> · now</div><strong id="push-title"></strong><div id="push-body"></div></div>
+  <div class="tour" id="tour" hidden><div class="tour-spot" id="tour-spot"></div><div class="tour-tip" id="tour-tip"><i class="tour-arrow" id="tour-arrow"></i><div class="tour-step" id="tour-step">STEP 1</div><div class="tour-title" id="tour-title"></div><div class="tour-text" id="tour-text"></div><div class="tour-actions"><div class="tour-dots" id="tour-dots"></div><div class="tour-btns"><button class="tour-skip" data-action="tour-skip">Skip</button><button class="tour-next" data-action="tour-next" id="tour-next">Next</button></div></div></div></div>
+  <div class="toast" id="toast"></div>
+  <button class="fab" id="demo-fab" data-action="demo"><span>▸</span> Demo <span class="demo-pill">PERSONAS</span></button>
+
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const money=n=>'₹'+Math.round(Number(n)).toLocaleString('en-IN');
+const CATS=['Housing','Utilities','Connectivity','Kitchen','Help'];
+
+/* ---- custom payment categories (Payday Hub style) ---- */
+const ADD_CATS=[
+ {id:'food',icon:'🍽️',label:'Food & Dining',hint:'Restaurants, groceries, tiffin'},
+ {id:'transport',icon:'🚗',label:'Transport',hint:'Cab, auto, petrol, metro'},
+ {id:'shopping',icon:'🛍️',label:'Shopping',hint:'Clothes, online orders'},
+ {id:'health',icon:'💊',label:'Health',hint:'Doctor, pharmacy, lab tests'},
+ {id:'entertainment',icon:'🎬',label:'Entertainment',hint:'OTT, movies, games'},
+ {id:'education',icon:'📚',label:'Education',hint:'Courses, school fees, books'},
+ {id:'savings',icon:'💰',label:'Savings / SIP',hint:'LIC, mutual fund SIP'},
+ {id:'other',icon:'📌',label:'Others',hint:'Anything else'}
+];
+let CUSTOM_PAYMENTS=[];/* [{id,icon,label,cat,name,amount,repeat,who,month}] */
+let _addCat='food',_addAmt='',_addNote='',_addRepeat=true;
+const PERSONAS={
+ solo:{id:'solo',name:'Ananya Iyer',init:'AI',cls:'ai2',tag:'SOLO RENTER',sub:'27 · product analyst · rents a 1BHK in Bengaluru',house:"Ananya's flat",bank:'HDFC Savings ••48',
+  today:'Airtel prepaid on Paytm; everything else on Google Pay',
+  phone:{logo:'ai',logoT:'ai',num:'99860 •• •48 · Ananya',circle:'Airtel Prepaid · Karnataka',plans:[[299,'28 days · 1.5 GB/day · Unlimited calls'],[859,'84 days · 1.5 GB/day · Unlimited calls']],valid:'valid till 20 Dec',lite:1840,last:'21 Oct',recent:[['AI','Ananya · you','99860 •• •48',299,'21 Oct'],['AM','Amma','94440 •• •12',199,'2 Nov']]},
+  cross:'elec',move:'bb',third:'gas',cap:2500,vs:'₹130 less',
+  bills:()=>[
+   {id:'mob',name:'Airtel prepaid',short:'Mobile',g:'▯',logo:'ai',logoT:'ai',biller:'Airtel',amount:299,state:'paytm',note:'Renews 20 Dec',cat:'Connectivity',rhythm:'3 days before the plan expires'},
+   {id:'elec',name:'Electricity',short:'Power',g:'ϟ',logo:'mv',logoT:'BE',biller:'BESCOM · Bengaluru',acct:'Account ID ••••3307 · A. Iyer',amount:1280,due:'26 Nov',state:'found',where:'Google Pay',cat:'Utilities',rhythm:'When the bill SMS arrives',kv:[['Bill month','October 2026'],['Due date','26 Nov 2026'],['Units','164 kWh'],['Last month','₹1,410']]},
+   {id:'bb',name:'Broadband',short:'Wi-Fi',g:'≋',logo:'tp',logoT:'ACT',biller:'ACT Fibernet',amount:1059,due:'5 Dec',state:'elsewhere',where:'Google Pay',cat:'Connectivity',since:'Jun 2026',mcap:1500,rhythm:'AutoPay · notice 24 h before'},
+   {id:'gas',name:'Piped gas',short:'Gas',g:'◍',logo:'in',logoT:'GA',biller:'GAIL Gas · Bengaluru',acct:'BP no. ••••5512 · A. Iyer',amount:610,due:'2 Dec',state:'found',where:'the GAIL website',cat:'Utilities',rhythm:'When the bill SMS arrives (every 2 months)',kv:[['Bill period','Sep–Oct 2026'],['Due date','2 Dec 2026'],['Usage','11.2 SCM']]}],
+  regular:()=>[
+   {id:'rent',name:'Rent',to:'Landlord · Mr. Rao',amount:22000,src:'e',srcT:'Google Pay · found in SMS',cat:'Housing'},
+   {id:'maid',name:'House help',to:'Lakshmi',amount:3000,src:'c',srcT:'Cash',cat:'Help',hidden:true}],
+  journey:[['consent','Allow SMS','Ananya lets Ghar read bill and payment SMS','i'],['found','Bills found','Ghar finds 3 bills and her rent','r'],['home','Home','A quiet Paytm Ghar card on her home screen','t'],['recharge','Recharge','Her usual Airtel recharge','t'],['rsuccess','Bill spotted','Recharge done, and her electricity bill is waiting','t'],['bill','Pay bill','BESCOM bill, pre-filled, one tap','a'],['status','Confirmed','The biller confirms; it lands in her kharcha','r'],['autopay','AutoPay','AutoPay with a limit she sets','i'],['hub','Ghar hub','2 of 4 bills now on Paytm','r'],['kharcha','Kharcha','Her month, filled in for her','r'],['cash','Add cash','House help paid in cash, added once','i'],['move','Move AutoPay','ACT broadband AutoPay moves from Google Pay','i'],['gas','Piped gas','GAIL bill paid the same way','a'],['history','History','October had 1 payment on Paytm; November has every bill','r'],['done','All done','Every home bill handled','r']]},
+ family:{id:'family',name:'Rakesh Verma',init:'RV',cls:'rv',tag:'FAMILY HOUSEHOLD',sub:'42 · teacher · owns a flat in Lucknow · family of four',house:'Verma household',bank:'SBI Savings ••21',
+  today:'3 Jio numbers on Paytm; bills split across Google Pay, phone calls and cash',
+  phone:{logo:'jio',logoT:'Jio',num:'98390 •• •21 · Rakesh',circle:'Jio Prepaid · Uttar Pradesh (East)',plans:[[349,'28 days · 2 GB/day · Unlimited calls'],[899,'90 days · 2 GB/day · Unlimited calls']],valid:'valid till 20 Dec',lite:1840,last:'20 Oct',recent:[['RV','Rakesh · you','98390 •• •21',349,'20 Oct'],['SV','Sunita','94150 •• •07',349,'18 Oct'],['AV','Aman','70070 •• •63',299,'2 Nov']]},
+  cross:'elec',move:'bb',third:'lpg',cap:4000,vs:'₹180 less',
+  bills:()=>[
+   {id:'jio',name:'Jio prepaid',short:'Mobile',g:'▯',logo:'jio',logoT:'Jio',biller:'3 family numbers',amount:349,state:'paytm',note:'Renews 20 Dec',cat:'Connectivity',who:'rv',rhythm:'3 days before each plan expires'},
+   {id:'elec',name:'Electricity',short:'Power',g:'ϟ',logo:'mv',logoT:'MV',biller:'MVVNL · Lucknow',acct:'Consumer no. ••••4821 · R. Verma',amount:2140,due:'26 Nov',state:'found',where:'Google Pay',cat:'Utilities',who:'rv',rhythm:'When the bill SMS arrives',kv:[['Bill month','October 2026'],['Due date','26 Nov 2026'],['Units','412 kWh'],['Last month','₹2,320']]},
+   {id:'dth',name:'DTH',short:'DTH',g:'◫',logo:'tp',logoT:'TP',biller:'Tata Play',acct:'Subscriber ID ••••0937',amount:349,due:'28 Nov',state:'found',where:"the operator's app",cat:'Connectivity',who:'sv',rhythm:'3 days before the pack ends',kv:[['Pack','Hindi Smart · monthly'],['Pack ends','28 Nov 2026']]},
+   {id:'bb',name:'Broadband',short:'Wi-Fi',g:'≋',logo:'ai',logoT:'ai',biller:'Airtel Xstream Fiber',amount:799,due:'5 Dec',state:'elsewhere',where:'Google Pay',cat:'Connectivity',who:'av',since:'Mar 2026',mcap:1000,rhythm:'AutoPay · notice 24 h before'},
+   {id:'lpg',name:'LPG cylinder',short:'LPG',g:'◍',logo:'in',logoT:'IN',biller:'Indane',amount:890,due:'~45-day gap',state:'found',where:'phone booking',cat:'Kitchen',who:'sv',rhythm:'From your own booking gap (~45 days)'}],
+  regular:()=>[
+   {id:'maid',name:'House help',to:'Kamla',amount:2500,src:'c',srcT:'Cash · added by Sunita',cat:'Help',who:'sv',hidden:true},
+   {id:'milk',name:'Milk & newspaper',to:'Monthly vendor',amount:1850,src:'e',srcT:'PhonePe · found in SMS',cat:'Kitchen',who:'sv'}],
+  members:()=>[{id:'rv',name:'Rakesh',role:'You · manager',st:'j'},{id:'sv',name:'Sunita',role:'Spouse',st:'i'},{id:'av',name:'Aman',role:'Son · college',st:'i'},{id:'pv',name:'Papa',role:'Name only',st:'n'}],
+  journey:[['consent','Allow SMS','Rakesh lets Ghar read bill and payment SMS','i'],['found','Bills found','Ghar finds 5 home bills','r'],['home','Home','A quiet Paytm Ghar card on his home screen','t'],['rsuccess','Bill spotted','Jio recharge done, and the electricity bill is waiting','t'],['bill','Pay bill','MVVNL bill, pre-filled, one tap','a'],['hub','Ghar hub','The household\u2019s bills in one place','r'],['family','Invite family','Sunita joins; Papa stays a name','i'],['assign','Who handles','Each bill gets an owner, nobody owes anybody','i'],['kharcha','Shared kharcha','One household view, filter by person','r'],['parents',"Papa's home","Pays Papa's electricity in Kanpur",'a'],['lpg','Book cylinder','Sunita books the LPG refill','a'],['move','Move AutoPay','Broadband AutoPay moves from Google Pay','i'],['history','History','October had 1 payment on Paytm; November has every bill','r'],['done','All done','Every home bill handled','r']]}
+};
+const SCREEN_OF={consent:null,found:null,autopay:'status',cash:'kharcha',gas:'bill',assign:'family'};
+let S;
+function fresh(pid){CUSTOM_PAYMENTS=[];_addCat='food';_addAmt='';_addNote='';_addRepeat=true;const P=PERSONAS[pid];return{rcTab:'mine',rcAmt:P.phone.plans[0][0],rcSrc:'lite',lite:P.phone.lite,recharged:false,gold:0,scratch:false,ru:0,nick:'Home',hf:'all',pid,bills:P.bills(),regular:P.regular(),members:P.members?P.members():[],paid:{},parentsPaid:false,step:0,coach:(S?S.coach:true),seen:{},filter:'all',cur:null,just:null}}
+const P=()=>PERSONAS[S.pid];
+const B=id=>S.bills.find(b=>b.id===id);
+const handled=b=>b.state==='paytm'||b.state==='autopay'||S.paid[b.id];
+const nH=()=>S.bills.filter(handled).length;
+const ringCss=(p,t)=>`conic-gradient(#22a06b 0 ${p}%,${t} ${p}% 100%)`;
+const screens=()=>[...document.querySelectorAll('.screen')];
+const memName=id=>(S.members.find(m=>m.id===id)||{}).name||'';
+
+function go(id){closeSheet();screens().forEach(s=>s.classList.toggle('active',s.id===id));const vp=$('viewport');if(vp)vp.scrollTop=0;window.scrollTo({top:0});syncStep(id);render();if(id==='done')confetti();endTour();maybeTour(id)}
+function toast(t){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove('show'),2600)}
+function push(t,b){$('push-title').textContent=t;$('push-body').textContent=b;const n=$('push-note');n.classList.add('show');clearTimeout(push._t);push._t=setTimeout(()=>n.classList.remove('show'),5000)}
+function pin(label,amount,cb,amtText){$('pin').classList.remove('lite');$('pin-hint').textContent='Enter UPI PIN';$('pin-bank').textContent=P().bank+' · UPI';$('pin-to').textContent=label;$('pin-amt').textContent=amtText||money(amount);const d=[...$('pin-dots').children];d.forEach(x=>x.classList.remove('f'));$('pin').classList.add('open');d.forEach((x,i)=>setTimeout(()=>x.classList.add('f'),160+i*140));setTimeout(()=>{$('pin').classList.remove('open');cb&&cb()},160+6*140+300)}
+function litePay(label,amount,cb){$('pin').classList.add('lite');$('pin-bank').textContent='UPI Lite · balance '+money(S.lite);$('pin-to').textContent=label;$('pin-amt').textContent=money(amount);$('pin-hint').textContent='No PIN needed · paying from UPI Lite';$('pin').classList.add('open');setTimeout(()=>{$('pin').classList.remove('open');S.lite-=amount;cb&&cb()},1100)}
+function closeSheet(){$('sheet').classList.remove('open')}
+function openSheet(html,onclick){$('sheet-body').innerHTML=html;$('sheet-body').onclick=onclick||null;$('sheet').classList.add('open')}
+function confetti(){const c=$('confetti');c.innerHTML='';const cols=['#00baf2','#22a06b','#ffb020','#7c3aed','#e5484d'];for(let i=0;i<36;i++){const e=document.createElement('i');e.style.left=(Math.random()*100)+'%';e.style.background=cols[i%5];e.style.animationDelay=(Math.random()*.6)+'s';c.appendChild(e)}}
+const short=b=>b.biller.split(' ·')[0];
+
+/* ---------- screens ---------- */
+function openBill(id){const b=B(id);if(!b)return;if(b.id==='lpg'){go('lpg');return}if(b.state==='elsewhere'){openMove();return}
+ S.cur=id;$('bill-title').textContent=b.name+' bill';const lg=$('bill-logo');lg.className='op-logo '+b.logo;lg.textContent=b.logoT;
+ $('bill-biller').textContent=b.biller;$('bill-acct').textContent=b.acct||'';$('bill-amt').textContent=money(b.amount);
+ $('bill-kv').innerHTML=(b.kv||[]).map(([k,v])=>`<div class="kv"><span>${k}</span><b>${v}</b></div>`).join('');
+ $('bill-bank').textContent=P().bank+' · UPI';$('bill-cat').textContent=b.cat;$('bill-pay').textContent='Pay '+money(b.amount);$('ap-check').checked=false;S.ru=roundUp(b.amount);$('ru-check').checked=false;$('ru-row').hidden=!S.ru;$('ru-t').textContent=`Round up to ${money(b.amount+S.ru)}`;$('ru-s').textContent=`${money(S.ru)} goes into Paytm Gold · sell any time`;go('bill')}
+function openMove(){const b=B(P().move);const lg=$('mv-logo');lg.className='op-logo '+b.logo;lg.textContent=b.logoT;$('mv-biller').textContent=b.biller;$('mv-sub').textContent=`Broadband · ${money(b.amount)} a month · AutoPay since ${b.since}`;$('mv-t1').textContent=`Same limit (${money(b.mcap)}) and the same date, the 5th`;go('move')}
+function runStatus(b,offer){$('st-title').textContent=`${short(b)} ${b.name} · ${money(b.amount)}`;$('s1-t').textContent='Paid from '+P().bank;['s1','s2','s3'].forEach(s=>$(s).className='step');$('s3-t').textContent=`Waiting for ${short(b)} to confirm`;$('s3-s').textContent='Most bills confirm within minutes';$('ap-offer').hidden=true;$('scratch').hidden=true;$('sc-cover').classList.remove('gone');go('status');
+ setTimeout(()=>$('s1').classList.add('done'),250);setTimeout(()=>$('s2').classList.add('done'),700);setTimeout(()=>$('s3').classList.add('wait'),1000);
+ setTimeout(()=>{$('s3').className='step done';$('s3-t').textContent=`Confirmed by ${short(b)}`;$('s3-s').textContent=`Receipt saved · added to Ghar kharcha under ${b.cat}`;if(!S.scratch&&b.state!=='paytm'){$('scratch').hidden=false}if(offer!==false&&b.id===P().cross&&b.state!=='autopay')$('ap-offer').hidden=false},1900)}
+function openAutopay(){const b=B(P().cross);let cap=P().cap;const draw=()=>`<h3>AutoPay for ${short(b)} electricity</h3><div class="sub">Your bill changes every month, so you set the most it can ever take.</div>
+ <div class="cap-row"><div><div class="card-sub">Pay the full bill, up to</div><b>${money(cap)}</b></div><div class="stepper"><button data-cap="-500">−</button><button data-cap="500">＋</button></div></div>
+ <div class="tick-li">Notice 24 hours before every debit, with the amount</div><div class="tick-li">Skip any month or stop any time, with your UPI PIN</div><div class="tick-li">A bill above ${money(cap)} comes to you as a reminder instead</div><div class="tick-li">No fee for AutoPay</div>
+ <button class="primary full" style="margin-top:12px" data-action="confirm-autopay">Set up AutoPay · UPI PIN</button><button class="ghost full" data-action="close-sheet">Not now</button>`;
+ openSheet(draw(),e=>{const c=e.target.closest('[data-cap]');if(c){cap=Math.max(1500,Math.min(15000,cap+Number(c.dataset.cap)));$('sheet-body').innerHTML=draw()}})}
+function openCash(){const r=S.regular.find(x=>x.id==='maid');openSheet(`<h3>Add a cash payment</h3><div class="sub">For things you pay in cash every month. Ghar remembers it and asks again next month.</div>
+ <div class="kv"><span>What</span><b>${r.name} · ${r.to}</b></div><div class="kv"><span>Amount</span><b>${money(r.amount)}</b></div><div class="kv"><span>Repeats</span><b>Every month, around the 1st</b></div>${S.pid==='family'?'<div class="kv"><span>Paid by</span><b>Sunita</b></div>':''}
+ <button class="primary full" style="margin-top:12px" data-action="confirm-cash">Add to Ghar kharcha</button><button class="ghost full" data-action="close-sheet">Cancel</button>`)}
+function openAddPayment(){
+ const drawSheet=()=>{
+  const catBtns=ADD_CATS.map(c=>`<button class="add-sheet-tabs-btn ${_addCat===c.id?'on':''}" data-addcat="${c.id}"><span class="cat-icon">${c.icon}</span>${c.label}</button>`).join('');
+  const selCat=ADD_CATS.find(c=>c.id===_addCat)||ADD_CATS[0];
+  const whoRow=S.pid==='family'?`<div class="kv" style="margin-bottom:12px"><span>Paid by</span><div class="chips" style="margin:0">${S.members.filter(m=>m.id!=='pv').map(m=>`<button class="add-who-btn ${(!_addWho||_addWho===m.id)?'on':''}" data-addwho="${m.id}">${m.name}</button>`).join('')}</div></div>`:'';
+  return `<h3>${selCat.icon} Add a payment</h3>
+<div class="sub">${selCat.hint}</div>
+<div class="add-sheet-tabs">${catBtns}</div>
+<div class="add-amt-row"><span class="rupee">₹</span><input class="add-amt-input" id="add-amt-input" type="number" inputmode="numeric" placeholder="0" value="${_addAmt}"></div>
+<div class="add-note-row"><label>What was it for?</label><input class="add-note-input" id="add-note-input" type="text" placeholder="e.g. Swiggy dinner, Ola cab" value="${_addNote}"></div>
+${whoRow}
+<label class="add-repeat-row"><input type="checkbox" id="add-repeat-chk" ${_addRepeat?'checked':''}><span>Repeat every month (e.g. OTT, SIP, recurring expense)</span></label>
+<button class="primary full" style="margin-top:4px" data-action="confirm-add-payment">Add to Ghar kharcha</button>
+<button class="ghost full" data-action="close-sheet">Cancel</button>`};
+ openSheet(drawSheet(),e=>{
+  const btn=e.target.closest('[data-addcat],[data-addwho]');
+  if(btn){if(btn.dataset.addcat){_addCat=btn.dataset.addcat}_addAmt=$('add-amt-input')?$('add-amt-input').value:_addAmt;_addNote=$('add-note-input')?$('add-note-input').value:_addNote;if(btn.dataset.addwho)_addWho=btn.dataset.addwho;$('sheet-body').innerHTML=drawSheet();return}
+ })}
+let _addWho='rv';
+function openInvite(){openSheet(`<h3>Bring your household in</h3><div class="sub">Members see the shared bills and can pay the ones they handle. Anyone can stay as just a name.</div>
+ <div class="assign"><span class="who sv">SV</span><div class="am"><b style="font-size:13px">Sunita</b><div class="card-sub">Invite on WhatsApp · she uses Paytm</div></div><button data-action="invite-sv" style="padding:5px 10px">Invite</button></div>
+ <div class="assign"><span class="who av">AV</span><div class="am"><b style="font-size:13px">Aman</b><div class="card-sub">College student · add via Pocket Money (UPI Circle)</div></div><button data-action="invite-av" style="padding:5px 10px">Add</button></div>
+ <div class="assign"><span class="who pv">PV</span><div class="am"><b style="font-size:13px">Papa</b><div class="card-sub">No app needed · gets receipts on WhatsApp</div></div><span class="st n">Name only</span></div>
+ <button class="ghost full" data-action="close-sheet">Done</button>`)}
+
+/* ---------- render ---------- */
+function tabs(cur){const t=[['hub','Bills'],['kharcha','Kharcha']];if(S.pid==='family')t.push(['family','Family']);t.push(['history','History']);return t.map(([id,l])=>`<button class="${id===cur?'on':''}" data-go="${id}">${l}</button>`).join('')}
+function brow(b){let sub='',act='',badge='';
+ if(b.state==='autopay'){badge='<span class="badge ap">AutoPay</span>';sub=b.id===P().move?'Moved from Google Pay · next debit 5 Dec':`Up to ${money(P().cap)} · notice 24 h before`}
+ else if(b.state==='paytm'){badge='<span class="badge ap">On Paytm</span>';sub=b.note}
+ else if(S.paid[b.id]){badge='<span class="badge paid">Paid</span>';sub=b.id==='lpg'?'Booked · delivery in 2–3 days':'Paid on Paytm · biller confirmed'}
+ else if(b.state==='elsewhere'){badge='<span class="badge else">Google Pay</span>';sub=`Marked as paid automatically from SMS · AutoPay on Google Pay`;act=`<button class="mb-link warm" data-action="open-move">Move here ›</button>`}
+ else{sub=b.id==='lpg'?'41 days since last cylinder':`Due ${b.due} · usually paid on ${b.where}`;act=`<button class="mb-link" data-bill="${b.id}">${b.id==='lpg'?'Book ›':'Pay Bill ›'}</button>`}
+ const who=S.pid==='family'&&b.who?`<span class="who ${b.who}" style="width:20px;height:20px;font-size:8.5px;flex:0 0 20px;display:inline-grid;vertical-align:-5px;margin-left:5px">${b.who.toUpperCase()}</span>`:'';
+ return `<div class="brow ${S.just===b.id?'just':''}"><div class="op-logo ${b.logo}">${b.logoT}</div><div class="bm"><div class="bn">${b.name}${badge}${who}</div><div class="bs">${b.biller} · ${sub}</div></div><div class="ba">${money(b.amount)}${act?'<br>'+act:''}</div></div>`}
+function kItems(){const it=[];S.bills.forEach(b=>{let s;if(handled(b))s='p';else if(b.state==='elsewhere')s='e';else s='d';it.push({name:b.name,to:b.biller,amount:b.amount,s,cat:b.cat,who:b.who,logo:b.logo,logoT:b.logoT,srcT:s==='p'?'Paytm':s==='e'?'Google Pay AutoPay':'Due '+b.due})});
+ S.regular.filter(r=>!r.hidden).forEach(r=>it.push({name:r.name,to:r.to,amount:r.amount,s:r.src,cat:r.cat,who:r.who,srcT:r.srcT}));
+ if(S.pid==='family'&&S.parentsPaid)it.push({name:"Papa's electricity",to:'KESCo · Kanpur',amount:1640,s:'p',cat:'Utilities',who:'rv',srcT:"Paytm · Papa's home",sep:true});
+ CUSTOM_PAYMENTS.filter(x=>!x.month||x.month==='nov').forEach(x=>it.push({name:x.name,to:x.repeat?'Repeats every month':'One-time · November',amount:x.amount,s:'m',cat:'Added by you',who:x.who,srcT:'Added by you',customIcon:x.icon,customCat:x.catLabel,isCustom:true}));
+ return it}
+const PLAN_CAT={
+ ai:{popular:[[349,'28 days · 2 GB/day · Unlimited calls'],[979,'84 days · 2 GB/day · Unlimited calls']],data:[[22,'1 GB · 1 day'],[77,'5 GB · till your plan ends']],ott:[[449,'28 days · 3 GB/day · a streaming app included']]},
+ jio:{popular:[[299,'28 days · 1.5 GB/day · Unlimited calls'],[3599,'365 days · 2.5 GB/day · Unlimited calls']],data:[[19,'1 GB · 1 day'],[69,'6 GB · till your plan ends']],ott:[[449,'28 days · 3 GB/day · a streaming app included']]}};
+const RC_TABS=[['mine','Your plans'],['popular','Popular'],['data','Data add-on'],['ott','With OTT']];
+function rcPlans(){const ph=P().phone;return S.rcTab==='mine'?ph.plans:(PLAN_CAT[ph.logo]||PLAN_CAT.ai)[S.rcTab]}
+function roundUp(a){const r=Math.ceil(a/50)*50-a;return r}
+const NEW_BILLS=[['ϟ','Electricity'],['≋','Broadband'],['◍','Piped gas'],['▲','LPG cylinder'],['◫','DTH'],['▯','Postpaid'],['◌','Water','off'],['＋','More']];
+function histRows(){const p=P(),rows=[],rc=S.bills.find(b=>b.state==='paytm');
+ if(rc){rows.push({m:'nov',t:'rc',k:'RECHARGE · MOBILE',n:rc.name+' · '+rc.biller,d:S.recharged?'Today':'21 Nov',v:S.recharged?'Paid via UPI Lite · no PIN':'Paid via UPI',a:S.recharged?S.rcAmt:rc.amount,st:'Success',logo:rc.logo,logoT:rc.logoT});
+  rows.push({m:'oct',t:'rc',k:'RECHARGE · MOBILE',n:rc.name+' · '+rc.biller,d:p.phone.last,v:'Paid via UPI',a:rc.amount,st:'Success',logo:rc.logo,logoT:rc.logoT})}
+ S.bills.forEach(b=>{if(b.state==='paytm')return;
+  if(S.paid[b.id])rows.push({m:'nov',t:'bill',k:(b.id==='lpg'?'BOOKING · ':'BILL PAYMENT · ')+b.name.toUpperCase(),n:b.biller,d:'Today',v:'Paid via UPI · Bharat Connect',a:b.amount,st:'Success',logo:b.logo,logoT:b.logoT});
+  if(b.state==='autopay')rows.push({m:'nov',t:'ap',k:'AUTOPAY · '+b.name.toUpperCase(),n:b.biller,d:'Today',v:b.id===p.move?'Moved from Google Pay · next debit 5 Dec':'Up to '+money(p.cap)+' · notice 24 h before',a:null,st:'Active',logo:b.logo,logoT:b.logoT})});
+ if(S.parentsPaid)rows.push({m:'nov',t:'bill',k:"BILL PAYMENT · PAPA'S HOME",n:'KESCo · Kanpur',d:'Today',v:'Paid via UPI · receipt sent to Papa',a:1640,st:'Success',logo:'mv',logoT:'KE'});
+ if(S.gold)rows.push({m:'nov',t:'bill',k:'SAVINGS · PAYTM GOLD',n:'Round-ups from bills',d:'Today',v:'Bought with your bill payments',a:S.gold,st:'Success',logo:'',logoT:'◉'});
+ return rows}
+function render(){const p=P(),n=nH(),N=S.bills.length,pct=n/N*100;
+ $('avatar').textContent=p.init;$('menu-init').textContent=p.init;$('menu-name').textContent=p.name;$('menu-sub').textContent='Demo persona · '+p.sub;
+ // home
+ $('home-ring').style.background=ringCss(pct,'#e6edf3');$('home-ring-n').textContent=`${n}/${N}`;
+ $('home-ring-msg').textContent=n===N?`All ${N} home bills handled · see November's kharcha`:`${n} of ${N} home bills on Paytm · ${N-n} more found for you`;
+ $('home-icons').innerHTML=S.bills.map(b=>`<span class="hb-ic ${handled(b)?'on':''}"><span class="g">${b.g}</span>${b.short}</span>`).join('');
+ // due card
+ {const c=B(p.cross);const show=!handled(c);$('due-card').style.display=show?'flex':'none';$('dc-logo').className='op-logo '+c.logo;$('dc-logo').textContent=c.logoT;$('dc-t').textContent='Electricity · '+short(c);$('dc-s').textContent=`${money(c.amount)} due on ${c.due}`}
+ // gold coins mission (existing Paytm reward)
+ {const cats=new Set(S.bills.filter(handled).map(b=>b.id==='jio'||b.id==='mob'?'mobile':b.id));const n3=Math.min(3,cats.size);$('gm-n').textContent=n3+'/3';$('gm-fill').style.width=(n3/3*100)+'%';$('gm-s').textContent=n3>=3?'Unlocked: 10,000 Gold Coins this month · existing Paytm reward':`${3-n3} more categor${3-n3>1?'ies':'y'} to unlock 10,000 Gold Coins · existing Paytm reward`}
+ // recharge
+ const ph=p.phone;$('rc-logo').className='op-logo '+ph.logo;$('rc-logo').textContent=ph.logoT;$('rc-num').textContent=ph.num;$('rc-circle').textContent=ph.circle;
+ $('rc-hist').innerHTML=ph.recent.map(r=>`<div class="rch"><span class="rch-i">${r[0]}</span><div style="flex:1;min-width:0"><b>${r[1]}</b><small>${r[2]} · ₹${r[3]} on ${r[4]} · Paid</small></div><button class="rch-btn" data-action="repeat" data-amt="${r[3]}">Repeat ₹${r[3]}</button></div>`).join('');
+ $('rc-tabs').innerHTML=RC_TABS.map(([id,l])=>`<button class="${S.rcTab===id?'on':''}" data-rctab="${id}">${l}</button>`).join('');
+ $('rc-plans').innerHTML=rcPlans().map((x,i)=>`<button class="plan ${x[0]===S.rcAmt?'on':''}" data-plan="${x[0]}"><span><b>₹${x[0].toLocaleString('en-IN')}</b><small>${x[1]}</small></span>${S.rcTab==='mine'&&i===0?'<span class="tag">Last recharged</span>':''}</button>`).join('');
+ {const amt=S.rcAmt,liteOk=amt<=1000&&S.lite>=amt;if(!liteOk&&S.rcSrc==='lite')S.rcSrc='bank';
+  $('rc-src').innerHTML=`<button class="src-opt ${S.rcSrc==='lite'?'on':''} ${liteOk?'':'dis'}" data-src="lite"><span class="so-i lite">L</span><span style="flex:1"><b>UPI Lite <em>no PIN</em></b><small>${liteOk?'Balance '+money(S.lite)+' · for payments up to ₹1,000':'Up to ₹1,000 a payment · use your bank for this plan'}</small></span><i></i></button><button class="src-opt ${S.rcSrc==='bank'?'on':''}" data-src="bank"><span class="so-i">₹</span><span style="flex:1"><b>${p.bank}</b><small>UPI · with your UPI PIN</small></span><i></i></button>`;
+  $('rc-pay').textContent='Pay ₹'+amt.toLocaleString('en-IN')+(S.rcSrc==='lite'?' · UPI Lite':'');$('rc-pay').dataset.amt=amt}
+ // cross-sell
+ const c=B(p.cross);$('xs-logo').className='op-logo '+c.logo;$('xs-logo').textContent=c.logoT;$('xs-biller').textContent=short(c)+' Electricity';$('xs-acct').textContent=c.acct.split(' ·')[0];
+ $('xs-amt').innerHTML=`${money(c.amount)}<small>Due ${c.due}</small>`;$('xs-pay').textContent=`Pay ${money(c.amount)} now`;$('xs-p').textContent=`You usually pay this on ${c.where}. Pay it here in one tap — we already have the details, and it lands in your Ghar kharcha.`;
+ // hub
+ document.querySelectorAll('[data-tabs]').forEach(t=>{const scr=t.closest('.screen').id;t.innerHTML=tabs(scr)});
+ $('hub-eyebrow').textContent='November · '+p.house;$('hub-ring').style.background=ringCss(pct,'#2a5fa8');$('hub-n').textContent=`${n}/${N}`;
+ $('hub-h').textContent=n===N?'Every home bill is handled':`${N-n} bill${N-n>1?'s':''} to bring home`;
+ $('hub-p').textContent=n===N?'Nothing left to remember for November.':'Found in your bill SMS. Add each once; after that it is one tap or automatic.';
+ const due=S.bills.filter(b=>!handled(b)&&b.state==='found'),els=S.bills.filter(b=>!handled(b)&&b.state==='elsewhere'),on=S.bills.filter(handled);let h='';
+ if(due.length)h+=`<div class="grp-title"><span>Found in your SMS · due soon</span><span>${due.length}</span></div>`+due.map(brow).join('');
+ if(els.length)h+=`<div class="grp-title"><span>Paid on another app · auto-detected</span><span>${els.length}</span></div>`+els.map(brow).join('');
+ h+=`<div class="grp-title"><span>Handled on Paytm</span><span>${on.length}</span></div>`+on.map(brow).join('');$('hub-groups').innerHTML=h;
+ const k=kItems(),tot=k.filter(x=>!x.sep).reduce((s,x)=>s+x.amount,0);
+ $('hub-insight-t').textContent=S.pid==='solo'?(handled(B('elec'))?`Electricity came to ${money(1280)} — ₹130 less than October.`:`Your fixed kharcha this month is ${money(tot)}. ${money(k.filter(x=>x.s==='d').reduce((s,x)=>s+x.amount,0))} is still due.`):(handled(B('lpg'))?'Electricity came to ₹2,140 — ₹180 less than October.':'Your Indane cylinder was last booked 41 days ago — you usually book every 45 days.');
+ const h2=S.pid==='family'?`<div class="house2" data-go="parents"><span class="hi">⌂</span><div style="flex:1"><b style="font-size:13px">Papa's home · Kanpur</b><div class="card-sub">${S.parentsPaid?'Electricity paid · receipt sent to Papa':'Electricity ₹1,640 due 29 Nov'}</div></div><span class="hb-home-cta">›</span></div>`:'';
+ $('hub-house2').innerHTML=h2;$('m-total').textContent=money(tot);$('m-due').textContent=money(k.filter(x=>x.s==='d').reduce((s,x)=>s+x.amount,0));{const dn=k.filter(x=>x.s==='d').length;$('m-due-n').textContent=dn+(dn===1?' payment':' payments')+' · tap to plan ↗'}$('fam-house2').innerHTML=h2;
+ // kharcha
+ const f=S.filter;
+ const KM_OCT=S.kmon==='oct';
+ const kk=KM_OCT?k.filter(x=>!x.isCustom&&!x.sep).map(x=>Object.assign({},x,{s:/recharge|prepaid|jio|airtel|mobile/i.test(x.name+' '+x.cat)?'p':(x.s==='c'?'c':'e'),srcT:/recharge|prepaid|jio|airtel|mobile/i.test(x.name+' '+x.cat)?'Paytm':(x.s==='c'?'Cash':'Another app')})):k;
+ const ktot=kk.filter(x=>!x.sep).reduce((a,x)=>a+x.amount,0)||1;
+ const ks=s=>kk.filter(x=>x.s===s&&!x.sep).reduce((a,x)=>a+x.amount,0);
+ $('km-eyebrow').textContent=(KM_OCT?'October':'November')+' · '+p.house+' · filled in for you';
+ $('km-mon').textContent=KM_OCT?'October 2026':'November 2026';
+ document.querySelector('[data-action="km-prev"]').disabled=KM_OCT;document.querySelector('[data-action="km-next"]').disabled=!KM_OCT;
+ $('km-total').textContent=money(ktot);$('km-pt').textContent=money(ks('p'));$('km-el').textContent=money(ktot-ks('p'));
+ const kmPct=Math.round(ks('p')/ktot*100);
+ const catT={};kk.filter(x=>!x.sep).forEach(x=>{catT[x.cat]=(catT[x.cat]||0)+x.amount});
+ const cArr=Object.entries(catT).sort((a,b)=>b[1]-a[1]);const top=cArr[0]||['—',0];
+ const COLS=['#22a06b','#f59e0b','#00baf2','#ef4444','#8b5cf6','#14b8a6','#94a3b8'];
+ $('km-ai').innerHTML=(KM_OCT?[
+  `You spent <b>${money(ktot)}</b> on the home in October. <b>${top[0]}</b> was the biggest share at ${Math.round(top[1]/ktot*100)}%.`,
+  `Only <b>${kmPct}%</b> went through Paytm — just the recharge. ${money(ks('e'))} went through other apps.`,
+  `Bills were paid on different days, on different apps. Nothing in one place.`
+ ]:[
+  `<b>${money(ktot)}</b> of home kharcha tracked in November, filled in from your SMS.`,
+  `<b>${kmPct}%</b> went through Paytm${ks('d')?`; ${money(ks('d'))} is still due`:''}${ks('e')?`; ${money(ks('e'))} still on another app`:''}.`,
+  `<b>${top[0]}</b> is the biggest category at ${Math.round(top[1]/ktot*100)}%. ${p.vs?('Vs October: '+p.vs+'.'):''}`
+ ]).map(x=>`<li>${x}</li>`).join('');
+ $('km-dsub').textContent='By category · '+(KM_OCT?'October':'November so far');
+ const R=40,C=2*Math.PI*R;let ang=0;
+ $('km-donut').innerHTML=`<svg width="108" height="108" viewBox="0 0 108 108"><circle cx="54" cy="54" r="${R}" fill="none" stroke="#eef2f6" stroke-width="14"/>`+cArr.map(([n,v],i)=>{const f=v/ktot,s=`<circle cx="54" cy="54" r="${R}" fill="none" stroke="${COLS[i%COLS.length]}" stroke-width="14" stroke-dasharray="${(C*f).toFixed(1)} ${C.toFixed(1)}" transform="rotate(${ang-90} 54 54)"/>`;ang+=f*360;return s}).join('')+`<text x="54" y="51" text-anchor="middle" font-size="9" fill="#6b778c">On Paytm</text><text x="54" y="66" text-anchor="middle" font-size="15" font-weight="800" fill="#092d72">${kmPct}%</text></svg>`;
+ $('km-dl').innerHTML=cArr.map(([n,v],i)=>`<div><i style="background:${COLS[i%COLS.length]}"></i>${n}<span>${money(v)}</span></div>`).join('');
+ $('km-filter').innerHTML=S.pid==='family'?`<div class="chips">${[['all','Everyone']].concat(S.members.filter(m=>m.id!=='pv').map(m=>[m.id,m.name])).map(([id,l])=>`<button class="${f===id?'on':''}" data-filter="${id}">${l}</button>`).join('')}</div>`:'';
+ const shown=kk.filter(x=>f==='all'||x.who===f);
+ const allCats=[...CATS,...(CUSTOM_PAYMENTS.length?['Added by you']:[])];
+ $('km-list').innerHTML=allCats.map(cat=>{const r=shown.filter(x=>x.cat===cat);if(!r.length)return'';return `<div class="km-cat"><span>${cat}</span><span>${money(r.reduce((a,x)=>a+x.amount,0))}</span></div>`+r.map(x=>{const cls={p:'p',e:'e',c:'c',d:'d',m:'m'}[x.s]||'c';const w=S.pid==='family'&&x.who?`<span class="who ${x.who}">${x.who.toUpperCase()}</span>`:(x.isCustom?`<div class="op-logo" style="width:30px;height:30px;flex:0 0 30px;background:#f0e9ff;font-size:16px;border-radius:10px">${x.customIcon}</div>`:x.logo?`<div class="op-logo ${x.logo}" style="width:30px;height:30px;flex:0 0 30px;font-size:10px">${x.logoT}</div>`:'<div class="op-logo" style="width:30px;height:30px;flex:0 0 30px;background:#94a3b8;font-size:12px">₹</div>');const tag=x.isCustom&&x.customCat?`<span class="ktag"><span class="ti">${x.customIcon}</span>${x.customCat}</span>`:'';return `<div class="krow${x.isCustom?' custom':''}">${w}<div class="km"><div class="kn">${x.name}</div><div class="ks">${x.to}</div>${x.isCustom?tag:`<span class="src ${cls}">${x.srcT}</span>`}</div><div class="ka">${money(x.amount)}</div></div>`}).join('')}).join('');
+ $('km-note').textContent=S.pid==='family'?'Everyone’s payments land in one household view. Nobody owes anybody — it just shows who handled what.':'Bills paid on Paytm and recurring payments found in your SMS fill this in automatically. Cash and anything else you add takes one tap.';
+ // family
+ if(S.pid==='family'){$('members').innerHTML=S.members.map(m=>`<div class="mem ${m.st==='i'?'pending':''}"><span class="who ${m.id}">${m.id.toUpperCase()}</span>${m.name}<small>${m.role}</small><span class="st ${m.st}">${m.st==='j'?'Joined':m.st==='i'?'Invite':'Name only'}</span></div>`).join('')+`<div class="mem add" data-action="invite"><span class="who">＋</span>Add<small>member</small></div>`;
+  $('assign-list').innerHTML=S.bills.concat(S.regular.filter(r=>!r.hidden&&r.who)).map(b=>`<div class="assign"><div class="op-logo ${b.logo||''}" style="width:32px;height:32px;flex:0 0 32px;font-size:10px;${b.logo?'':'background:#94a3b8'}">${b.logoT||'₹'}</div><div class="am"><b style="font-size:12.5px">${b.name}</b><div class="card-sub">${money(b.amount)} · ${b.biller||b.to}</div></div><button data-assign="${b.id}"><span class="who ${b.who}">${b.who.toUpperCase()}</span>${memName(b.who)}</button></div>`).join('');
+  $('lpg-who').textContent=memName(B('lpg').who)}
+ $('par-pay').textContent=S.parentsPaid?'Paid · receipt sent to Papa':'Pay for Papa · ₹1,640';
+ // reminders
+ $('rem-list').innerHTML=S.bills.map(b=>`<label class="switch-row"><span>${b.name} · ${b.biller}<small>${b.state==='autopay'?'AutoPay · notice 24 h before':b.rhythm}</small></span><input type="checkbox" checked><i></i></label>`).join('');
+ // done
+ $('done-h').textContent=`All ${N} home bills handled`;$('done-sub').textContent='November · '+p.house;
+ const ap=S.bills.filter(b=>b.state==='autopay').length;
+ $('done-kv').innerHTML=(S.pid==='solo'?[['Electricity this month','₹1,280 · ₹130 less than October'],['Fixed kharcha tracked',money(tot)],['On AutoPay',ap+' bills'],['Late fees this month','₹0']].concat(S.gold?[['Saved in Paytm Gold',money(S.gold)]]:[]):[['Electricity this month','₹2,140 · ₹180 less than October'],['Household kharcha tracked',money(tot)],['Handled by','Rakesh, Sunita, Aman'],["Papa's home",S.parentsPaid?'Paid · receipt sent':'₹1,640 due 29 Nov']].concat(S.gold?[['Saved in Paytm Gold',money(S.gold)]]:[])).map(([a,b])=>`<div class="kv"><span>${a}</span><b>${b}</b></div>`).join('');
+ $('done-share').textContent=S.pid==='family'?'Share receipts to “Verma Family”':'Download rent & bill receipts (for HRA)';
+$('newbill').innerHTML=NEW_BILLS.map(([g,l,off])=>`<button class="${off||''}" ${off?'data-action="water"':l==='More'?'data-go="add"':`data-action="new-bill" data-cat="${l}"`}><span>${g}</span>${l}</button>`).join('');
+ $('km-gold').hidden=!S.gold;$('km-gold').innerHTML=`<span>◉</span> ${money(S.gold)} saved in Paytm Gold from bill round-ups`;
+ {const r=histRows(),nov=r.filter(x=>x.m==='nov'&&x.a!=null&&x.t!=='ap'),oct=r.filter(x=>x.m==='oct');
+  $('hi-eyebrow').textContent='Recharges and home bills · '+p.house;
+  $('hi-compare').innerHTML=`<div><small>OCTOBER ON PAYTM</small><b>${oct.length} payment${oct.length===1?'':'s'}</b><span>${money(oct.reduce((a,x)=>a+x.a,0))}</span></div><i>→</i><div class="now"><small>NOVEMBER ON PAYTM</small><b>${nov.length} payment${nov.length===1?'':'s'}</b><span>${money(nov.reduce((a,x)=>a+x.a,0))}</span></div>`;
+  $('hi-filter').innerHTML=[['all','All'],['rc','Recharges'],['bill','Bills'],['ap','AutoPay']].map(([id,l])=>`<button class="${S.hf===id?'on':''}" data-hfilter="${id}">${l}</button>`).join('');
+  const sh=r.filter(x=>S.hf==='all'||x.t===S.hf);
+  $('hi-list').innerHTML=[['nov','November 2026'],['oct','October 2026']].map(([m,l])=>{const g=sh.filter(x=>x.m===m);if(!g.length)return'';return `<div class="grp-title"><span>${l}</span><span>${g.length}</span></div>`+g.map(x=>`<div class="hrow"><div class="op-logo ${x.logo}" style="${x.logo?'':'background:#f5b800'}">${x.logoT}</div><div class="hm"><small>${x.k}</small><b>${x.n}</b><span>${x.d} · ${x.v}</span><em class="${x.st==='Active'?'act':''}">${x.st}</em></div><div class="ha">${x.a!=null?money(x.a):''}</div></div>`).join('')}).join('')}
+ renderPanel()}
+
+/* ---------- panel (outside the phone) ---------- */
+function renderPanel(){let pn=$('panel');if(!pn){pn=document.createElement('aside');pn.id='panel';pn.className='panel';document.body.insertBefore(pn,document.getElementById('app'))}
+ const p=P(),J=p.journey,i=S.step,cur=J[i],HC={t:'Trigger',a:'Action',r:'Reward',i:'Investment'};
+ pn.innerHTML=`<div class="pk">PAYTM GHAR · PROTOTYPE</div>
+ <div class="pseg">${['solo','family'].map(id=>`<button class="${S.pid===id?'on':''}" data-persona="${id}"><span class="who ${PERSONAS[id].cls}">${PERSONAS[id].init}</span><span><b>${PERSONAS[id].name.split(' ')[0]}</b><small>${id==='solo'?'Solo renter':'Family'}</small></span></button>`).join('')}</div>
+ <div class="pwho">${p.sub}</div>
+ <div class="pnow"><div class="pnow-k">STEP ${i+1} OF ${J.length} <span class="hdot ${cur[3]}"></span>${HC[cur[3]]}</div><div class="pnow-t">${cur[2]}</div>
+ <div class="pnav"><button data-step="${Math.max(0,i-1)}" ${i===0?'disabled':''}>‹ Back</button><button class="next" data-step="${Math.min(J.length-1,i+1)}" ${i===J.length-1?'disabled':''}>Next step ›</button></div></div>
+ <div class="pline">${J.map((s,k)=>`<button class="pdot ${k===i?'on':''} ${k<i?'past':''}" data-step="${k}" title="${s[2]}"><i class="hdot ${s[3]}"></i><span>${s[1]}</span></button>`).join('')}</div>
+ <div class="ptools"><button class="${S.coach?'on':''}" data-action="toggle-coach">Coach marks</button><button class="${document.body.classList.contains('show-hooks')?'on':''}" data-action="toggle-hooks">Hook labels</button><button data-action="reset">↺ Restart</button></div>
+ <div class="pleg"><span><i class="hdot t"></i>Trigger</span><span><i class="hdot a"></i>Action</span><span><i class="hdot r"></i>Reward</span><span><i class="hdot i"></i>Investment</span></div>`}
+function syncStep(screen){const j=P().journey;const i=j.findIndex((s,k)=>k>=S.step&&(SCREEN_OF[s[0]]!==undefined?SCREEN_OF[s[0]]:s[0])===screen);if(i>=0)S.step=i}
+
+/* ---------- jumping to a step ---------- */
+const EFFECT={bill:s=>{s.paid[P().cross]=true},status:s=>{s.paid[P().cross]=true},autopay:s=>{s.bills.find(b=>b.id===P().cross).state='autopay'},cash:s=>{s.regular.find(r=>r.id==='maid').hidden=false},move:s=>{s.bills.find(b=>b.id===P().move).state='autopay'},gas:s=>{s.paid.gas=true},family:s=>{s.members.find(m=>m.id==='sv').st='j'},assign:s=>{s.regular.find(r=>r.id==='maid').hidden=false;s.members.find(m=>m.id==='av').st='j'},parents:s=>{s.parentsPaid=true},lpg:s=>{s.paid.lpg=true}};
+function jump(i){$('toast').classList.remove('show');$('push-note').classList.remove('show');const j=P().journey;S=fresh(S.pid);const hooks=document.body.classList.contains('show-hooks');for(let k=0;k<i;k++){const e=EFFECT[j[k][0]];if(e)e(S)}S.step=i;if(hooks)document.body.classList.add('show-hooks');
+ const key=j[i][0];$('consent-overlay').classList.remove('open');closeSheet();
+ if(key==='consent'){go('home');$('consent-overlay').classList.add('open');$('consent-ask').hidden=false;$('consent-done').hidden=true;S.step=i;render();return}
+ if(key==='found'){go('home');showFound();S.step=i;render();return}
+ if(key==='bill'){openBill(P().cross);S.step=i;render();return}
+ if(key==='status'){runStatus(B(P().cross));S.step=i;render();return}
+ if(key==='autopay'){$('scratch').hidden=true;go('status');['s1','s2','s3'].forEach(s=>$(s).className='step done');$('st-title').textContent=`${short(B(P().cross))} Electricity · ${money(B(P().cross).amount)}`;$('ap-offer').hidden=false;S.step=i;render();setTimeout(openAutopay,150);return}
+ if(key==='cash'){go('kharcha');S.step=i;render();setTimeout(openCash,150);return}
+ if(key==='move'){openMove();S.step=i;render();return}
+ if(key==='gas'){openBill('gas');S.step=i;render();return}
+ if(key==='family'){go('family');S.step=i;render();setTimeout(openInvite,150);return}
+ if(key==='assign'){go('family');S.step=i;render();toast('Tap a name to change who handles a bill');return}
+ if(key==='done'){S.bills.forEach(b=>{if(!handled(b))S.paid[b.id]=true});go('done');S.step=i;render();return}
+ go(key);S.step=i;render()}
+function showFound(){const p=P();$('consent-overlay').classList.add('open');$('consent-ask').hidden=true;$('consent-done').hidden=false;
+ const reg=S.regular.filter(r=>!r.hidden);$('found-h').textContent=`${S.bills.length} home bills${reg.length?' + '+reg.length+' regular payment'+(reg.length>1?'s':''):''} found`;
+ $('found-list').innerHTML=S.bills.map(b=>`<div class="consent-row done"><span>${b.g}</span><div><strong>${b.name} · ${short(b)}</strong><small>${b.state==='paytm'?'Already on Paytm':b.state==='elsewhere'?'AutoPay on '+b.where:'Paid on '+b.where}</small></div></div>`).join('')+reg.map(r=>`<div class="consent-row done"><span>₹</span><div><strong>${r.name} · ${r.to}</strong><small>${r.srcT} — tracked in Ghar kharcha</small></div></div>`).join('')}
+function afterPay(id){S.paid[id]=true;S.just=id;if(nH()===S.bills.length)setTimeout(()=>go('done'),400)}
+function setPersona(pid){const hooks=document.body.classList.contains('show-hooks');S=fresh(pid);if(hooks)document.body.classList.add('show-hooks');jump(0)}
+
+
+/* ---------- coach marks (training), as in Payday Hub ---------- */
+const TOURS={
+ hub:[['#hub .hb-hero','Your home bills, on one ring','Every bill Ghar found in your SMS. The ring fills as each one moves to Paytm.'],['#hub .metrics','Your month at a glance','Monthly kharcha and what is still due. Tap either card for the full picture.'],['#hub-groups','One tap per bill','Due soon, paid on another app, handled. Each row has the one action it needs: Pay, Book or Move here.'],['#hub .expense-home-banner','Ghar kharcha','Your expense manager — filled in by paying, not by typing.']],
+ kharcha:[['#kharcha .km-hero','Filled in for you','Bills paid on Paytm and payments found in your SMS. The bar shows where each rupee went.'],['#kharcha .km-plan','Plan the rest of the month','What is still due, and how this month compares with October.'],['#km-list','By category','Housing, utilities, connectivity, kitchen and help — your fixed monthly kharcha.'],['#kharcha [data-action="add-cash"]','Track any payment','Paid in cash or on another app? Tag it in one tap — it auto-repeats next month if you tick the box.']],
+ recharge:[['#rc-hist','Repeat in one tap','Your last recharges, for you and your family. One tap picks the same plan again.'],['#rc-src','UPI Lite for small payments','Recharges under ₹1,000 go through UPI Lite: no PIN, and your bank statement stays clean.'],['#rc-trust','No surprises','₹0 platform fee, and an instant refund if a recharge fails.']],
+ history:[['#hi-compare','Your month, before and after','October: only the recharge was on Paytm. November: every home bill.'],['#hi-filter','Find any payment','Filter recharges, bills and AutoPay. Every receipt is kept here.']],
+ family:[['#members','Your household','Members join with one WhatsApp invite. Papa can stay a name — no app needed.'],['#assign-list','Who handles what','Tap a name to hand a bill over. Nobody owes anybody; nothing gets paid twice.'],['#fam-house2','A second home',"Look after Papa's bills in Kanpur from the same place."]]};
+let TI=-1,TK=null;const APP=$('app');
+function maybeTour(screen){if(!S.coach||!TOURS[screen]||S.seen[screen])return;S.seen[screen]=true;setTimeout(()=>{if(document.getElementById(screen).classList.contains('active')&&!$('sheet').classList.contains('open')){TK=screen;TI=0;$('tour').hidden=false;showTour()}},350)}
+function endTour(){TI=-1;$('tour').hidden=true}
+function steps(){let t=TOURS[TK];if(TK==='kharcha'&&S.pid==='family')t=[t[0],['#km-filter','See who paid what','Filter the household kharcha by person.'],t[2],t[3]];return t}
+function showTour(){const st=steps()[TI];const el=document.querySelector(st[0]);if(!el){endTour();return}el.scrollIntoView({block:'center'});
+ $('tour-step').textContent=`STEP ${TI+1} OF ${steps().length}`;$('tour-title').textContent=st[1];$('tour-text').textContent=st[2];$('tour-next').textContent=TI===steps().length-1?'Got it':'Next';
+ $('tour-dots').innerHTML=steps().map((_,k)=>`<i class="${k===TI?'on':''}"></i>`).join('');requestAnimationFrame(placeTour)}
+function placeTour(){if(TI<0)return;const el=document.querySelector(steps()[TI][0]);if(!el)return;const a=APP.getBoundingClientRect(),r=el.getBoundingClientRect(),pad=6;
+ const top=r.top-a.top-APP.clientTop-pad,left=r.left-a.left-APP.clientLeft-pad,w=r.width+pad*2,h=r.height+pad*2;
+ Object.assign($('tour-spot').style,{top:top+'px',left:left+'px',width:w+'px',height:h+'px'});
+ const tip=$('tour-tip'),th=tip.offsetHeight,vb=Math.min(APP.clientHeight,window.innerHeight-a.top-APP.clientTop);const below=top+h+12+th<=vb-8;
+ tip.classList.toggle('below',below);tip.classList.toggle('above',!below);tip.style.top=(below?top+h+12:Math.max(8,top-th-12))+'px';
+ $('tour-arrow').style.left=Math.max(16,Math.min(tip.offsetWidth-30,left+w/2-14-7))+'px'}
+document.getElementById('viewport').addEventListener('scroll',placeTour);window.addEventListener('resize',placeTour);
+
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{const km=e.target.closest('[data-action="km-prev"],[data-action="km-next"]');if(km&&!km.disabled){S.kmon=km.dataset.action==='km-prev'?'oct':'nov';render();return}const t=e.target.closest('[data-go],[data-action],[data-bill],[data-plan],[data-persona],[data-step],[data-filter],[data-assign],[data-rctab],[data-src],[data-nick],[data-hfilter]');if(!t)return;
+ if(t.dataset.persona){setPersona(t.dataset.persona);return}
+ if(t.dataset.step!==undefined){jump(Number(t.dataset.step));return}
+ if(t.dataset.filter){S.filter=t.dataset.filter;render();return}
+ if(t.dataset.assign){const it=S.bills.find(b=>b.id===t.dataset.assign)||S.regular.find(r=>r.id===t.dataset.assign);const ids=S.members.filter(m=>m.id!=='pv').map(m=>m.id);it.who=ids[(ids.indexOf(it.who)+1)%ids.length];render();toast(`${it.name} is now handled by ${memName(it.who)}`);return}
+ if(t.dataset.go){go(t.dataset.go);return}
+ if(t.dataset.bill){openBill(t.dataset.bill);return}
+ if(t.dataset.plan){S.rcAmt=Number(t.dataset.plan);if(S.rcAmt<=1000&&S.lite>=S.rcAmt)S.rcSrc='lite';render();return}
+ if(t.dataset.rctab){S.rcTab=t.dataset.rctab;render();return}
+ if(t.dataset.src){if(t.classList.contains('dis')){toast('UPI Lite takes payments up to ₹1,000');return}S.rcSrc=t.dataset.src;render();return}
+ if(t.dataset.nick){S.nick=t.dataset.nick;document.querySelectorAll('#nick-chips button').forEach(x=>x.classList.toggle('on',x===t));return}
+ if(t.dataset.hfilter){S.hf=t.dataset.hfilter;render();return}
+ const a=t.dataset.action;
+ if(a==='consent-allow'){showFound();S.step=Math.max(S.step,1);renderPanel()}
+ else if(a==='consent-skip'){$('consent-overlay').classList.remove('open');toast('You can add bills yourself from Paytm Ghar')}
+ else if(a==='consent-continue'){$('consent-overlay').classList.remove('open');go('home')}
+ else if(a==='consent-again'){jump(0)}
+ else if(a==='pay-recharge'){const amt=Number($('rc-pay').dataset.amt),lite=S.rcSrc==='lite'&&amt<=1000&&S.lite>=amt;const done=()=>{S.recharged=true;$('rs-amt').textContent=money(amt);$('rs-sub').textContent=P().phone.num.split(' ·')[0]+' · '+P().phone.valid+(lite?' · paid from UPI Lite':'');go('rsuccess')};if(lite)litePay(P().phone.circle.split(' ·')[0],amt,done);else pin(P().phone.circle.split(' ·')[0],amt,done)}
+ else if(a==='repeat'){S.rcAmt=Number(t.dataset.amt);S.rcTab=P().phone.plans.some(x=>x[0]===S.rcAmt)?'mine':S.rcTab;if(S.rcAmt<=1000&&S.lite>=S.rcAmt)S.rcSrc='lite';render();$('rc-pay').scrollIntoView({block:'center',behavior:'smooth'});toast('Same plan as last time · ₹'+S.rcAmt)}
+ else if(a==='scratch'){if(S.scratch)return;S.scratch=true;$('sc-cover').classList.add('gone');setTimeout(()=>toast('₹25 cashback won · goes to your bank account'),500)}
+ else if(a==='new-bill'){const c=t.dataset.cat,b=S.bills.find(x=>x.name.toLowerCase().startsWith(c.toLowerCase().split(' ')[0]));if(b){if(handled(b)){toast(`${b.name} is already handled in Ghar`);return}if(b.state==='elsewhere'){openMove();return}openBill(b.id);return}go('add');toast(`Search your ${c.toLowerCase()} biller`)}
+ else if(a==='sample-bill'){const eb=B(P().cross),kv=Object.fromEntries(eb.kv||[]),nm=(eb.acct||'').split('· ')[1]||P().name,last4=(eb.acct||'').match(/(\d{4})/);openSheet(`<h3>Find your consumer number</h3><div class="sub">It is printed near the top of your electricity bill. Ghar fills it in from your bill SMS, so you rarely need this.</div><div class="sample"><div class="sb-h"><b>${short(eb).toUpperCase()} · ELECTRICITY BILL</b><span>${kv['Bill month']||'October 2026'}</span></div><div class="sb-r"><span>Name</span><b>${nm}</b></div><div class="sb-r hl"><span>Consumer no. / Account ID</span><b>7713 ${last4?last4[1]:'0000'}</b></div><div class="sb-r"><span>Units consumed</span><b>${kv['Units']||'—'}</b></div><div class="sb-r"><span>Amount due</span><b>${money(eb.amount)}</b></div><div class="sb-r"><span>Due date</span><b>${kv['Due date']||eb.due}</b></div></div><button class="primary full" data-action="close-sheet">Got it</button>`)}
+ else if(a==='statement'){toast('October–November statement ready (simulated)')}
+ else if(a==='open-cross'){openBill(P().cross)}
+ else if(a==='open-move'){openMove()}
+ else if(a==='open-third'){openBill(P().third)}
+ else if(a==='remind'){toast('Reminder set for 24 Nov, 9 AM')}
+ else if(a==='pay-bill'){const b=B(S.cur);const ap=$('ap-check').checked,ru=$('ru-check').checked&&!$('ru-row').hidden?S.ru:0;pin(b.biller,b.amount+ru,()=>{if(ru){S.gold+=ru;setTimeout(()=>toast(money(ru)+' saved in Paytm Gold'),2300)}afterPay(b.id);if(ap){b.state='autopay'}if(nH()<S.bills.length)runStatus(b,!ap);if(ap)toast('Paid · AutoPay on for next month')})}
+ else if(a==='open-autopay'){openAutopay()}
+ else if(a==='confirm-autopay'){closeSheet();pin('AutoPay · '+short(B(P().cross))+' electricity',0,()=>{B(P().cross).state='autopay';S.just=P().cross;toast('AutoPay on · notice 24 hours before each debit');go('hub')},'Up to '+money(P().cap))}
+ else if(a==='close-sheet'){closeSheet()}
+ else if(a==='do-move'){const b=B(P().move);pin('Move AutoPay · '+short(b),b.amount,()=>{b.state='autopay';S.just=b.id;toast('AutoPay moved to Paytm · Google Pay mandate closed');if(nH()===S.bills.length)go('done');else go('hub')})}
+ else if(a==='pay-lpg'){pin('Indane · LPG refill',890,()=>{afterPay('lpg');toast(`Cylinder booked by ${memName(B('lpg').who)||'you'} · delivery in 2–3 days`);if(nH()<S.bills.length)go('hub')})}
+ else if(a==='add-cash'){if(!$('kharcha').classList.contains('active'))go('kharcha');setTimeout(openCash,50)}
+ else if(a==='confirm-cash'){S.regular.find(r=>r.id==='maid').hidden=false;closeSheet();render();toast('Added · Ghar will ask again next month')}
+ else if(a==='confirm-add-payment'){
+  const amt=Number($('add-amt-input')?$('add-amt-input').value:_addAmt);
+  const note=($('add-note-input')?$('add-note-input').value:_addNote)||'';
+  const repeat=$('add-repeat-chk')?$('add-repeat-chk').checked:_addRepeat;
+  if(!amt){toast('Please enter an amount');return}
+  const cat=ADD_CATS.find(c=>c.id===_addCat)||ADD_CATS[0];
+  CUSTOM_PAYMENTS.push({id:'cp'+(Date.now()),icon:cat.icon,label:cat.label,catLabel:cat.label,hint:cat.hint,name:note||cat.label,amount:amt,repeat,who:S.pid==='family'?(_addWho||'rv'):'',month:'nov',cat:'Custom'});
+  _addAmt='';_addNote='';closeSheet();render();
+  toast(`${cat.icon} Added ${note||cat.label} · ${money(amt)} to Ghar kharcha`)}
+ else if(a==='open-add-payment'){openAddPayment()}
+ else if(a==='invite'){openInvite()}
+ else if(a==='invite-sv'){S.members.find(m=>m.id==='sv').st='j';closeSheet();render();toast('Sunita joined Verma household')}
+ else if(a==='invite-av'){S.members.find(m=>m.id==='av').st='j';closeSheet();render();toast('Aman added via Pocket Money (UPI Circle) · his payments show in Ghar kharcha')}
+ else if(a==='pay-parents'){if(S.parentsPaid)return;pin('KESCo · for Papa',1640,()=>{S.parentsPaid=true;render();toast('Paid · receipt sent to Papa on WhatsApp (simulated)')})}
+ else if(a==='share'){toast(S.pid==='family'?'Receipts shared to “Verma Family” (simulated)':'Receipts PDF ready (simulated)')}
+ else if(a==='push-24h'){const b=B(P().cross);push(`Tomorrow: ${short(b)} ${money(b.amount+70)} by AutoPay`,`Within your ${money(P().cap)} limit. Tap to skip this month.`)}
+ else if(a==='tour-next'){if(TI<steps().length-1){TI++;showTour()}else endTour()}
+ else if(a==='tour-skip'){endTour()}
+ else if(a==='toggle-coach'){S.coach=!S.coach;if(!S.coach)endTour();renderPanel()}
+ else if(a==='toggle-hooks'){document.body.classList.toggle('show-hooks');renderPanel()}
+ else if(a==='reset'){jump(0)}
+ else if(a==='demo'){openSheet(`<h3>Prototype controls</h3><div class="sub">Pick a persona, then a step.</div><div class="demo-list">${['solo','family'].map(id=>`<button data-persona="${id}"><span>${PERSONAS[id].init}</span>${PERSONAS[id].name} · ${PERSONAS[id].tag.toLowerCase()}</button>`).join('')}${P().journey.map((j,i)=>`<button data-step="${i}"><span>${i+1}</span>${j[2]}</button>`).join('')}<button data-action="toggle-hooks"><span>H</span>Toggle Hook labels</button></div>`)}
+ else if(a==='water'){toast("Water: your city's board isn't on Bharat Connect yet — out of v1")}
+ else if(a==='noop'){toast('Not part of this demo')}
+});
+$('sheet').addEventListener('click',e=>{if(e.target.id==='sheet')closeSheet()});
+$('ru-check').addEventListener('change',()=>{const b=B(S.cur);if(!b)return;$('bill-pay').textContent=$('ru-check').checked?`Pay ${money(b.amount)} + ${money(S.ru)} to Gold`:'Pay '+money(b.amount)});
+S=fresh('solo');
+(function(){const h=location.hash;if(h.includes('hooks'))document.body.classList.add('show-hooks');if(h.includes('family'))S=fresh('family');render();const m=h.match(/step(\d+)/);if(m)jump(Number(m[1])-1)})();
+
+</script>
+</body>
+</html>
